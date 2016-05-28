@@ -71,9 +71,11 @@ def Closure getNodeForInstance(String instanceName) {
                     ///////////////MAGIC///////////////////////////
                     Random random = new Random()
                     if (random.nextInt() % 10 < 5) {
+                        echo "Random fails the build? NO"
                         sh("true")
                     } else {
-                        sh("true")
+                        echo "Random fails the build? YES"
+                        sh("false")
                     }
 
                     //////////////////////////////////////////////
