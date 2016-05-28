@@ -18,7 +18,7 @@ def failTheBuild(String message) {
     error(message)
 }
 
-def notify() {
+def postBuildNotify() {
     //(new SlackPostBuild()).execute()
 }
 
@@ -26,7 +26,7 @@ def run(Object step){
     try {
         step.execute()
     } catch (err) {
-        // this.notify()
+        this.postBuildNotify()
 
         // unfortunately, err.message is not whitelisted by script security
         //failTheBuild(err.message)
