@@ -6,14 +6,21 @@ def call(body) {
     body.delegate = config
     body()
 
-
-    def buildResult = config.buildResult
+    def buildResult = config.result
+    def message = config.message
 
     // set currentBuild.result
     if (buildResult != null) {
         if (buildResult == "FAILURE" || buildResult == "SUCCESS") {
-            // set the build result
+
+            def messageColor = (buildResult == "FAILURE") ? "\033[31m" : "\033[32m"
+            def messageColorReset = "\033[0m"
+            echo messageColor + message + messageColorReset
+            
+            echo "Updating currentBuild.result to ${buildResult}"
             currentBuild.result = buildResult
+
+            // set the build result
         } else {
             thrown "buildResult has to be one of null|SUCCESS|FAILURE"
         }

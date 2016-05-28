@@ -79,9 +79,11 @@ def Closure getNodeForInstance(String instanceName) {
                     }
 
                     //////////////////////////////////////////////
-                    currentBuild.result = 'SUCCESS'
                 } catch (err) {
-                    currentBuild.result = 'FAILURE'
+                    setBuildResult {
+                        result = 'FAILURE'
+                        message = "test-kitchen instance ${instanceName} failed"
+                    }
                 }
             }
         }
