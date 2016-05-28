@@ -2,10 +2,8 @@
 
 package org.typo3.chefci.v1;
 
-def setup() {
-    stage('clone cookbook')
+def prepare() {
     node {
-        checkout(scm)
         // we e.g. have a .kitchen.docker.yml left from the last run. Remove that.
         sh("git clean -fdx")
     }
@@ -13,7 +11,7 @@ def setup() {
 
 
 def execute() {
-    setup()
+    prepare()
 
     (new Lint()).execute()
     (new BerkshelfInstall()).execute()
