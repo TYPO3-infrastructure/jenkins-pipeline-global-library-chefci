@@ -66,7 +66,8 @@ def Closure getNodeForInstance(String instanceName) {
 
             wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "XTerm"]) {
                 try {
-                    sh('kitchen test --destroy always ' + instanceName)
+                    // sh('kitchen test --destroy always ' + instanceName)
+                    sh('sleep 10')
                     currentBuild.result = 'SUCCESS'
                 } catch (err) {
                     currentBuild.result = 'FAILURE'
