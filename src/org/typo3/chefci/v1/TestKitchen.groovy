@@ -68,6 +68,15 @@ def Closure getNodeForInstance(String instanceName) {
                 try {
                     // sh('kitchen test --destroy always ' + instanceName)
                     sh('sleep 10')
+                    ///////////////MAGIC///////////////////////////
+                    Random random = new Random()
+                    if (random.nextInt() % 10 < 5) {
+                        sh("true")
+                    } else {
+                        sh("true")
+                    }
+
+                    //////////////////////////////////////////////
                     currentBuild.result = 'SUCCESS'
                 } catch (err) {
                     currentBuild.result = 'FAILURE'
