@@ -17,6 +17,7 @@ def execute() {
     (new BerkshelfInstall()).execute()
     (new TestKitchen()).execute()
     (new BerkshelfUpload()).execute()
+    (new ArchiveArtifacts()).execute()
 }
 
 return this;
