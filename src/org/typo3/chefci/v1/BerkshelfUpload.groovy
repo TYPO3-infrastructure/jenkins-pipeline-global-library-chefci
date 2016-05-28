@@ -3,7 +3,7 @@
 package org.typo3.chefci.v1;
 
 def berksUpload(){
-    echo "I could upload..."
+    sh("berks upload")
 }
 
 def execute(){
