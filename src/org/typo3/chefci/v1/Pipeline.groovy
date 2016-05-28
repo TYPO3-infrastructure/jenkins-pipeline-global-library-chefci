@@ -9,6 +9,10 @@ def prepare() {
     }
 }
 
+def buildResultIsStillGood() {
+    return currentBuild.result != "FAILURE"
+}
+
 def runIfStillGreen(Object stage){
     if (buildResultIsStillGood()){
         run(stage)
