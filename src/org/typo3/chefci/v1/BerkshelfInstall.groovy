@@ -13,7 +13,7 @@ def berksInstall(){
 def execute(){
     stage('resolve dependencies')
     node {
-        berksInstall()
+        this.berksInstall()
     }
 }
 

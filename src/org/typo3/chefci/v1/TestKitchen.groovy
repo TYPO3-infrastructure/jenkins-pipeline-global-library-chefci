@@ -43,7 +43,7 @@ def ArrayList<String> getInstances(){
 }
 
 def parallelConverge() {
-    parallelConverge(getInstances())
+    this.parallelConverge(this.getInstances())
 }
 
 def parallelConverge(ArrayList<String> instanceNames) {
@@ -51,7 +51,7 @@ def parallelConverge(ArrayList<String> instanceNames) {
 
     for (int i = 0; i < instanceNames.size(); i++) {
         def instanceName = instanceNames.get(i)
-        parallelNodes["tk-${instanceName}"] = getNodeForInstance(instanceName)
+        parallelNodes["tk-${instanceName}"] = this.getNodeForInstance(instanceName)
     }
 
     parallel parallelNodes
@@ -82,17 +82,17 @@ def prepare(){
     echo "Start prepare()"
 
     node {
-        createKitchenYaml()
-        setKitchenLocalEnv()
+        this.createKitchenYaml()
+        this.setKitchenLocalEnv()
         stash("cookbook-tk")
     }
     echo "End prepare()"
 }
 
 def execute(){
-    prepare()
+    this.prepare()
     // this will allocate multiple nodes
-    parallelConverge()
+    this.parallelConverge()
 }
 
 return this;

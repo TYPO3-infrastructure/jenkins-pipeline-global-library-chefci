@@ -9,7 +9,7 @@ def berksUpload(){
 def execute(){
     stage('upload')
     node {
-        berksUpload()
+        this.berksUpload()
     }
 }
 

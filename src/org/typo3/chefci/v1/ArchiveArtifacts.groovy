@@ -3,7 +3,7 @@
 package org.typo3.chefci.v1;
 
 def archiveArtifacts(){
-    artifactName = "cookbooks-${env.BUILD_TAG}.tar.gz"
+    def artifactName = "cookbooks-${env.BUILD_TAG}.tar.gz"
     sh("berks package ${artifactName}")
     archive(includes: artifactName)
 }
@@ -11,7 +11,7 @@ def archiveArtifacts(){
 def execute(){
     stage('archive artifacts')
     node {
-        archiveArtifacts()
+        this.archiveArtifacts()
     }
 }
 

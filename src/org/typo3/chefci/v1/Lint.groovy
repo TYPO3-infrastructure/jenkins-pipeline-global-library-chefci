@@ -19,8 +19,8 @@ def rubocop(){
 def execute(){
     stage('lint')
     node {
-        foodcritic()
-        rubocop()
+        this.foodcritic()
+        this.rubocop()
     }
 }
 

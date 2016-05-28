@@ -9,18 +9,30 @@ def prepare() {
     }
 }
 
+def runIfStillGreen(Object stage){
+    if (buildResultIsStillGood()){
+        run(stage)
+    }
+}
+
+def run(Object step){
+    step.execute()
+}
 
 def execute() {
-    prepare()
+    this.prepare()
 
-    (new Lint()).execute()
-    (new BerkshelfInstall()).execute()
-    (new TestKitchen()).execute()
-    (new ArchiveArtifacts()).execute()
+    this.runIfStillGreen(new Lint())
+
+    this.runIfStillGreen(new BerkshelfInstall())
+    this.runIfStillGreen(new TestKitchen())
+    this.runIfStillGreen(new ArchiveArtifacts())
 
     if (env.BRANCH_NAME == "master") {
-        (new BerkshelfUpload()).execute()
+        this.runIfStillGreen(new BerkshelfUpload())
     }
+
+    this.run(new SlackPostBuild())
 }
 
 return this;
