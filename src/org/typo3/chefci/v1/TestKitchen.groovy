@@ -2,6 +2,8 @@
 package org.typo3.chefci.v1
 
 def createKitchenYaml(){
+    echo "createKitchenYaml()"
+
     if (fileExists('.kitchen.docker.yml')) {
         echo('Using the cookbooks .kitchen.docker.yml')
     } else {
@@ -19,9 +21,78 @@ driver:
     }
 }
 
+def setKitchenLocalEnv(){
+    env.KITCHEN_LOCAL_YAML=".kitchen.docker.yml"
+}
 
+def ArrayList<String> getInstances(){
+    def tkInstanceNames = []
 
+    node {
+        // read out the list of test instances from `kitchen list`
+        sh('kitchen list > KITCHEN_INSTANCES')
+        def lines = readFile('KITCHEN_INSTANCES').split('\n')
+        // skip the headline, read out all instances
+        for (int i = 1; i < lines.size(); i++) {
+            tkInstanceNames << lines[i].tokenize(' ')[0]
+        }
+        // remove tempfile
+        sh('rm KITCHEN_INSTANCES')
+    }
+    return tkInstanceNames
+}
 
+def parallelConverge() {
+    parallelConverge(getInstances())
+}
 
+def parallelConverge(ArrayList<String> instanceNames) {
+    def parallelNodes = [:]
+
+    for (int i = 0; i < instanceNames.size(); i++) {
+        def instanceName = instanceNames.get(i)
+        parallelNodes["tk-${instanceName}"] = getNodeForInstance(instanceName)
+    }
+
+    stage('testkitchen')
+    parallel parallelNodes
+}
+
+def Closure getNodeForInstance(String instanceName) {
+    return {
+        // this node (one per instance) is later executed in parallel
+        node {
+            // restore workspace
+            unstash('cookbook-tk')
+
+            wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "XTerm"]) {
+                try {
+                    sh('kitchen test --destroy always ' + instanceName)
+                    currentBuild.result = 'SUCCESS'
+                } catch (err) {
+                    currentBuild.result = 'FAILURE'
+                }
+            }
+        }
+    }
+}
+
+def prepare(){
+    stage "test-kitchen"
+    echo "Start prepare()"
+
+    node {
+        createKitchenYaml()
+        setKitchenLocalEnv()
+        stash("cookbook-tk")
+    }
+    echo "End prepare()"
+}
+
+def execute(){
+    prepare()
+    // this will allocate multiple nodes
+    parallelConverge()
+}
 
 return this;
