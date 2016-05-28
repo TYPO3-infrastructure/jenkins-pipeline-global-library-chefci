@@ -67,21 +67,9 @@ def Closure getNodeForInstance(String instanceName) {
             wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "XTerm"]) {
                 try {
                     // sh('kitchen test --destroy always ' + instanceName)
-                    sh('sleep 10')
-                    ///////////////MAGIC///////////////////////////
-                    Random random = new Random()
-                    if (random.nextInt() % 10 < 5) {
-                        echo "Random fails the build? NO"
-                        sh("true")
-                    } else {
-                        echo "Random fails the build? YES"
-                        sh("false")
-                    }
-
-                    //////////////////////////////////////////////
+                    sh('sleep 1')
                 } catch (err) {
-                    setBuildResult {
-                        result = 'FAILURE'
+                    failTheBuild {
                         message = "test-kitchen instance ${instanceName} failed"
                     }
                 }

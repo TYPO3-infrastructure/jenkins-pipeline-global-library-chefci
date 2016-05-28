@@ -5,9 +5,10 @@ package org.typo3.chefci.v1;
 def berksInstall(){
     try {
         sh('berks install')
-        currentBuild.result = 'SUCCESS'
     } catch (err) {
-        currentBuild.result = 'FAILURE'
+        failTheBuild {
+            message = "'berks install' failed"
+        }
     }
 }
 def execute(){

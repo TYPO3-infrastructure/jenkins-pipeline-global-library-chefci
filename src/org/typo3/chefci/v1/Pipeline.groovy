@@ -26,14 +26,14 @@ def run(Object step){
 def execute() {
     this.prepare()
 
-    this.runIfStillGreen(new Lint())
+    this.run(new Lint())
 
-    this.runIfStillGreen(new BerkshelfInstall())
-    this.runIfStillGreen(new TestKitchen())
-    this.runIfStillGreen(new ArchiveArtifacts())
+    this.run(new BerkshelfInstall())
+    this.run(new TestKitchen())
+    this.run(new ArchiveArtifacts())
 
     if (env.BRANCH_NAME == "master") {
-        this.runIfStillGreen(new BerkshelfUpload())
+        this.run(new BerkshelfUpload())
     }
 
     this.run(new SlackPostBuild())
