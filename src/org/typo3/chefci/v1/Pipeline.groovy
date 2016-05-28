@@ -9,18 +9,29 @@ def prepare() {
     }
 }
 
-def buildResultIsStillGood() {
-    return currentBuild.result != "FAILURE"
+def failTheBuild(String message) {
+    def messageColor = "\u001B[32m"
+    def messageColorReset = "\u001B[0m"
+
+    currentBuild.result = "FAILURE"
+    echo messageColor + message + messageColorReset
+    error(message)
 }
 
-def runIfStillGreen(Object stage){
-    if (buildResultIsStillGood()){
-        run(stage)
-    }
+def notify() {
+    //(new SlackPostBuild()).execute()
 }
 
 def run(Object step){
-    step.execute()
+    try {
+        step.execute()
+    } catch (err) {
+        // this.notify()
+
+        // unfortunately, err.message is not whitelisted by script security
+        //failTheBuild(err.message)
+        failTheBuild("Build failed")
+    }
 }
 
 def execute() {
@@ -35,8 +46,6 @@ def execute() {
     if (env.BRANCH_NAME == "master") {
         this.run(new BerkshelfUpload())
     }
-
-    this.run(new SlackPostBuild())
 }
 
 return this;
