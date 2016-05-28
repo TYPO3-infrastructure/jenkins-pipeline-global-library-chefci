@@ -65,14 +65,7 @@ def Closure getNodeForInstance(String instanceName) {
             unstash('cookbook-tk')
 
             wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "XTerm"]) {
-                try {
-                    // sh('kitchen test --destroy always ' + instanceName)
-                    sh('sleep 1')
-                } catch (err) {
-                    failTheBuild {
-                        message = "test-kitchen instance ${instanceName} failed"
-                    }
-                }
+                sh('kitchen test --destroy always ' + instanceName)
             }
         }
     }
@@ -80,14 +73,12 @@ def Closure getNodeForInstance(String instanceName) {
 
 def prepare(){
     stage "test-kitchen"
-    echo "Start prepare()"
 
     node {
         this.createKitchenYaml()
         this.setKitchenLocalEnv()
         stash("cookbook-tk")
     }
-    echo "End prepare()"
 }
 
 def execute(){
