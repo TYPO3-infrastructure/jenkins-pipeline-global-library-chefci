@@ -54,7 +54,6 @@ def parallelConverge(ArrayList<String> instanceNames) {
         parallelNodes["tk-${instanceName}"] = getNodeForInstance(instanceName)
     }
 
-    stage('testkitchen')
     parallel parallelNodes
 }
 
