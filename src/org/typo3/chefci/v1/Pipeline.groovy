@@ -16,8 +16,11 @@ def execute() {
     (new Lint()).execute()
     (new BerkshelfInstall()).execute()
     (new TestKitchen()).execute()
-    (new BerkshelfUpload()).execute()
     (new ArchiveArtifacts()).execute()
+
+    if (env.BRANCH_NAME == "master") {
+        (new BerkshelfUpload()).execute()
+    }
 }
 
 return this;
