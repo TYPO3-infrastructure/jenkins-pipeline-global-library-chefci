@@ -35,8 +35,6 @@ def ArrayList<String> getInstances(){
         for (int i = 1; i < lines.size(); i++) {
             tkInstanceNames << lines[i].tokenize(' ')[0]
         }
-        // remove tempfile
-        sh('rm KITCHEN_INSTANCES')
     }
     return tkInstanceNames
 }
