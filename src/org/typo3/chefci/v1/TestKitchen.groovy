@@ -30,8 +30,7 @@ def ArrayList<String> getInstances(){
 
     node {
         // read out the list of test instances from `kitchen list`
-        sh('kitchen list > KITCHEN_INSTANCES')
-        def lines = readFile('KITCHEN_INSTANCES').split('\n')
+        def lines = sh(script: 'kitchen list', returnStdout: true).split('\n')
         // skip the headline, read out all instances
         for (int i = 1; i < lines.size(); i++) {
             tkInstanceNames << lines[i].tokenize(' ')[0]
