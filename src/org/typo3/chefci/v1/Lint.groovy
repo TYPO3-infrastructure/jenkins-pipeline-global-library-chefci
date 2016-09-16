@@ -3,7 +3,7 @@
 package org.typo3.chefci.v1;
 
 def foodcritic(){
-    sh('rubocop --fail-level E')
+    sh('foodcritic .')
 }
 
 def rubocop(){
