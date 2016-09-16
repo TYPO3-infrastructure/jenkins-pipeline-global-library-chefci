@@ -23,9 +23,9 @@ def postBuildNotify() {
     //(new SlackPostBuild()).execute()
 }
 
-def run(Object step, options = [:]){
+def run(Object step){
     try {
-        step.execute(options)
+        step.execute()
     } catch (err) {
         this.postBuildNotify()
 
@@ -35,10 +35,10 @@ def run(Object step, options = [:]){
     }
 }
 
-def execute(options = [:]) {
+def execute() {
     this.prepare()
 
-    this.run(new Lint(), options['lint']))
+    this.run(new Lint())
 
     this.run(new BerkshelfInstall())
     this.run(new TestKitchen())
