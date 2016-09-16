@@ -35,10 +35,10 @@ def run(Object step){
     }
 }
 
-def execute() {
+def execute(options = [:]) {
     this.prepare()
 
-    this.run(new Lint())
+    this.run(new Lint(options['lint']))
 
     this.run(new BerkshelfInstall())
     this.run(new TestKitchen())

@@ -2,8 +2,12 @@
 
 package org.typo3.chefci.v1;
 
-def foodcritic(){
-    sh('foodcritic .')
+def foodcritic(def options = [:]){
+    if (options['epicFail']) {
+        sh("foodcritic -f ${options['epicFail']} .")
+    } else {
+        sh('foodcritic .')
+    }
 }
 
 def rubocop(){
@@ -16,10 +20,10 @@ def rubocop(){
 
 //////////////////////////
 
-def execute(){
+def execute(options = [:]){
     stage('lint')
     node {
-        this.foodcritic()
+        this.foodcritic(options['foodcritic'])
         this.rubocop()
     }
 }
