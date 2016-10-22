@@ -15,8 +15,8 @@ driver:
   name: docker
   use_sudo: false
   provision_command:
-    - apt-get install -y wget # this is only needed as long as Debian 8 does not trust bintray.com
-    - apt-get install -y net-tools cron
+    - apt-get update && apt-get install -y wget # this is only needed as long as Debian 8 does not trust bintray.com
+    - apt-get update && apt-get install -y net-tools cron
     ''')
     }
 }
