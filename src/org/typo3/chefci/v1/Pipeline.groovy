@@ -20,7 +20,7 @@ def failTheBuild(String message) {
 }
 
 def postBuildNotify() {
-    //(new SlackPostBuild()).execute()
+    (new SlackPostBuild()).execute()
 }
 
 def run(Object step){
