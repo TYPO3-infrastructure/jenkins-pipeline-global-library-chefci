@@ -5,12 +5,7 @@ package org.typo3.chefci.v1;
 
 def execute(){
     slackSend(
-            message: """
-            Cookbook ${env.JOB_NAME} build #${env.BUILD_NUMBER} *started*:
-            Author: ${env.CHANGE_AUTHOR} / ${env.CHANGE_TITLE}
-            Change: ${env.CHANGE_URL}
-            Build:  ${env.BUILD_URL}
-            """,
+            message: "${env.JOB_NAME} [build #${env.BUILD_NUMBER}](${env.BUILD_URL}) *started*",
             failOnError: false
     )
 }
