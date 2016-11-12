@@ -19,10 +19,6 @@ def failTheBuild(String message) {
     error(message)
 }
 
-def preBuildNotify() {
-    (new SlackPreBuild()).execute()
-}
-
 def run(Object step){
     try {
         step.execute()
@@ -34,6 +30,8 @@ def run(Object step){
 }
 
 def execute() {
+    (new SlackPreBuild()).execute()
+    
     this.prepare()
 
     this.run(new Lint())
