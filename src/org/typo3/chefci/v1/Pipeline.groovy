@@ -17,6 +17,7 @@ def failTheBuild(String message) {
     currentBuild.result = "FAILURE"
     echo messageColor + message + messageColorReset
     error(message)
+    postBuildNotify
 }
 
 def postBuildNotify() {
