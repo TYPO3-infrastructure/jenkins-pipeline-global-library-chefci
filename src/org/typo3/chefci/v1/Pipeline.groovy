@@ -11,7 +11,7 @@ def prepare() {
 }
 
 def failTheBuild(String message) {
-    def messageColor = "\u001B[32m"
+    def messageColor = "\u001B[32m" 
     def messageColorReset = "\u001B[0m"
 
     currentBuild.result = "FAILURE"
@@ -22,9 +22,6 @@ def failTheBuild(String message) {
 def preBuildNotify() {
     (new SlackPreBuild()).execute()
 }
-def postBuildNotify() {
-    (new SlackPostBuild()).execute()
-}
 
 def run(Object step){
     try {
@@ -33,7 +30,6 @@ def run(Object step){
         // unfortunately, err.message is not whitelisted by script security
         //failTheBuild(err.message)
         failTheBuild("Build failed")
-        postBuildNotify
     }
 }
 
@@ -49,7 +45,7 @@ def execute() {
     if (env.BRANCH_NAME == "master") {
         this.run(new BerkshelfUpload())
     }
-    postBuildNotify
+    (new SlackPostBuild()).execute()
 }
 
 return this;
