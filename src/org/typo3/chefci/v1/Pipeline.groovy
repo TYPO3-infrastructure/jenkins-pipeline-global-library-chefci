@@ -20,6 +20,9 @@ def failTheBuild(String message) {
     postBuildNotify
 }
 
+def preBuildNotify() {
+    (new SlackPreBuild()).execute()
+}
 def postBuildNotify() {
     (new SlackPostBuild()).execute()
 }
@@ -28,8 +31,6 @@ def run(Object step){
     try {
         step.execute()
     } catch (err) {
-        this.postBuildNotify()
-
         // unfortunately, err.message is not whitelisted by script security
         //failTheBuild(err.message)
         failTheBuild("Build failed")
@@ -48,6 +49,7 @@ def execute() {
     if (env.BRANCH_NAME == "master") {
         this.run(new BerkshelfUpload())
     }
+    postBuildNotify
 }
 
 return this;
