@@ -6,8 +6,7 @@ package org.typo3.chefci.v1;
 def execute(){
     def status = buildResultIsStillGood() ? 'good' : 'bad'
     slackSend(
-            message: "{env.JOB_NAME} build #${env.BUILD_NUMBER} *finished*:\n  {env.BUILD_URL}
-            """,
+            message: "{env.JOB_NAME} build #${env.BUILD_NUMBER} *finished*:\n  {env.BUILD_URL}",
             color: status,
             failOnError: false
     )
