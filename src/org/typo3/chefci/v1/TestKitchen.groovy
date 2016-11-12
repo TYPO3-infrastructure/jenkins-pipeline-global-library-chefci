@@ -16,7 +16,7 @@ driver:
   use_sudo: false
   provision_command:
     - apt-get update && apt-get install -y net-tools cron
-    - sed -i -e 's/httpredir.debian.org/mirror.hetzner.de/g' /etc/apt/sources.list
+    - sed -i -e 's/httpredir.debian.org/ftp.de.debian.org/g' /etc/apt/sources.list
     ''')
     }
 }
