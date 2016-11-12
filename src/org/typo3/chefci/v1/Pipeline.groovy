@@ -33,7 +33,7 @@ def run(Object step){
         // unfortunately, err.message is not whitelisted by script security
         //failTheBuild(err.message)
         failTheBuild("Build failed")
-        postBuildNotify()
+        postBuildNotify
     }
 }
 
