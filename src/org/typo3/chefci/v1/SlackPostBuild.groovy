@@ -12,4 +12,8 @@ def execute(){
     )
 }
 
+def buildResultIsStillGood(){
+	return currentBuild.result != 'FAILURE'
+}
+
 return this;
