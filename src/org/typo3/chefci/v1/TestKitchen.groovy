@@ -62,7 +62,13 @@ def Closure getNodeForInstance(String instanceName) {
             unstash('cookbook-tk')
 
             wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "XTerm"]) {
-                sh('kitchen test --destroy always ' + instanceName)
+                result = sh(script: 'kitchen test --destroy always ' + instanceName, returnStatus: true)
+                if (result != 0) {
+                        echo "kitchen returned non-zero exit status"
+                        echo "Archiving test-kitchen logs"
+                        archive(includes: ".kitchen/logs/${instanceName}.log")
+                        error("kitchen returned non-zero exit status")
+                }
             }
         }
     }
