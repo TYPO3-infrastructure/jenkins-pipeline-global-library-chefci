@@ -11,10 +11,13 @@ def prepare() {
 }
 
 def failTheBuild(String message) {
-    def messageColor = "\u001B[32m" 
-    def messageColorReset = "\u001B[0m"
 
     currentBuild.result = "FAILURE"
+
+    (new SlackPostBuild()).execute()
+    
+    def messageColor = "\u001B[32m" 
+    def messageColorReset = "\u001B[0m"
     echo messageColor + message + messageColorReset
     error(message)
 }
@@ -31,7 +34,7 @@ def run(Object step){
 
 def execute() {
     (new SlackPreBuild()).execute()
-    
+
     this.prepare()
 
     this.run(new Lint())
