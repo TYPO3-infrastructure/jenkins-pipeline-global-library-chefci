@@ -14,6 +14,11 @@ def createKitchenYaml(){
 driver:
   name: docker
   use_sudo: false
+  run_command: /bin/systemd
+  cap_add:
+    - SYS_ADMIN
+  volume:
+    - /sys/fs/cgroup
   provision_command:
     - sed -i -e 's/httpredir.debian.org/ftp.de.debian.org/g' /etc/apt/sources.list
     - apt-get update && apt-get install -y net-tools cron
