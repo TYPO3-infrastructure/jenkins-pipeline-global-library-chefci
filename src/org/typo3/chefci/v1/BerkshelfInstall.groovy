@@ -3,7 +3,9 @@
 package org.typo3.chefci.v1;
 
 def berksInstall(){
-    sh('berks install')
+    chefdk {
+        sh 'berks install'
+    }
 }
 def execute(){
     stage('resolve dependencies')
