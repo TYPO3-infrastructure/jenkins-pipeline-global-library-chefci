@@ -17,7 +17,7 @@ def subscribeToUpstreamJobs() {
     for (i = 0; i < deps.size(); i++) {
         def cookbookName = deps[i]
 
-        echo "currentBuild: ${env.JOB_BASE_NAME}"
+        echo "currentBuild: ${getCookbookName()}"
 //        if (cookbookName.equals(currentBuild.getName())) {
 //            echo "Skipping myself"
 //            continue
@@ -81,10 +81,15 @@ def removeFromList(ArrayList list, item) {
 def getUpstreamJobName(String cookbook) {
     //def jobName = "TYPO3-cookbooks/${cookbook}/develop"
 
-    def folderName = currentBuild.rawBuild.getParent().getParent().getParent()
+    def folderName = currentBuild.rawBuild.getParent().getParent().getParent().getName()
     def jobName = "${folderName}/${cookbook}/develop"
     echo "Resulting job name: ${jobName}"
     return jobName
+}
+
+@NonCPS
+def getCookbookName() {
+    return currentBuild.rawBuild.getParent().getParent().getName()
 }
 
 def jobExists(String jobName) {
