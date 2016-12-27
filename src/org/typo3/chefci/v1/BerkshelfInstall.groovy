@@ -25,8 +25,8 @@ def subscribeToUpstreamJobs() {
 
         def upstreamJobName = getUpstreamJobName(cookbookName)
         echo "#${i}: ${cookbookName} -> ${upstreamJobName}"
-        def upstreamCookbookJobExists = jobExists(upstreamJobName)
-        if (upstreamCookbookJobExists) {
+
+        if (jobExists(upstreamJobName)) {
             echo "Adding upstream job #${upstreamJobName}"
             existingUpstreamCookbookJobs << upstreamJobName
         } else {
