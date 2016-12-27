@@ -17,7 +17,7 @@ def subscribeToUpstreamJobs() {
     for (i = 0; i < deps.size(); i++) {
         def cookbookName = deps[i]
 
-        echo "currentBuild: ${currentJob.getName()}"
+        echo "currentBuild: ${env.JOB_NAME()}"
 //        if (cookbookName.equals(currentBuild.getName())) {
 //            echo "Skipping myself"
 //            continue
