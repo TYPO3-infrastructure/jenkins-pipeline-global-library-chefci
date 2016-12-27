@@ -5,9 +5,7 @@ package org.typo3.chefci.v1;
 import groovy.json.JsonSlurper
 
 def berksInstall(){
-    chefdk {
-        sh 'berks install'
-    }
+    sh 'berks install'
 }
 
 def subscribeToUpstreamJobs() {
