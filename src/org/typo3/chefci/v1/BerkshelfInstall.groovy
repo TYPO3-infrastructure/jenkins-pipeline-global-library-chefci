@@ -17,7 +17,7 @@ def subscribeToUpstreamJobs() {
     for (i = 0; i < deps.size(); i++) {
         def cookbookName = deps[i]
 
-        echo "currentBuild: ${currentBuild.getName()}"
+        echo "currentBuild: ${currentJob.getName()}"
 //        if (cookbookName.equals(currentBuild.getName())) {
 //            echo "Skipping myself"
 //            continue
@@ -56,6 +56,10 @@ def getCookbookDependencies(data) {
     return data.cookbooks.collect { it -> it.name }
 }
 
+@NonCPS
+def removeFromList(ArrayList list, item) {
+    return list.removeIf(it.eq(item))
+}
 //def setUpstreamJobs(cookbooks) {
 //    def existingJobs = filterExistingUpstreamJobs(cookbooks)
 //    echo "Existing upstream jobs: ${existingJobs}"
@@ -73,6 +77,7 @@ def getCookbookDependencies(data) {
 //    // cookbooks.each { it }
 //}
 
+@NonCPS
 def getUpstreamJobName(String cookbook) {
     //def jobName = "TYPO3-cookbooks/${cookbook}/develop"
 
