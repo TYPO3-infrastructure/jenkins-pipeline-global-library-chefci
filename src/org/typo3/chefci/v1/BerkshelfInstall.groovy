@@ -67,8 +67,8 @@ def getCookbookDependencies(data) {
 //}
 
 def getUpstreamJobName(String cookbook) {
-    // def jobName = "TYPO3-cookbooks/${name}/develop"
-    def jobName = "test/${cookbook}"
+    def jobName = "TYPO3-cookbooks/${cookbook}/develop"
+    
     // echo "Resulting job name: ${jobName}"
     return jobName
 }
