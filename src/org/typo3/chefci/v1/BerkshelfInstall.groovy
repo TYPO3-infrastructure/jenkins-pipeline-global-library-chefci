@@ -74,10 +74,11 @@ def getCookbookDependencies(data) {
 //}
 
 def getUpstreamJobName(String cookbook) {
-    def jobName = "TYPO3-cookbooks/${cookbook}/develop"
+    //def jobName = "TYPO3-cookbooks/${cookbook}/develop"
 
-    echo "Parent: ${currentBuild.rawBuild.getParent().getParent().getParent()}"
-    // echo "Resulting job name: ${jobName}"
+    def folderName = currentBuild.rawBuild.getParent().getParent().getParent()
+    def jobName = "${folderName}/${cookbook}/develop"
+    echo "Resulting job name: ${jobName}"
     return jobName
 }
 
