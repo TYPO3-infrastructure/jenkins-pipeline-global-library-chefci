@@ -33,20 +33,20 @@ def run(Object step){
 }
 
 def execute() {
-    (new SlackPreBuild()).execute()
+//    (new SlackPreBuild()).execute()
 
     this.prepare()
 
-    this.run(new Lint())
+    // this.run(new Lint())
 
     this.run(new BerkshelfInstall())
-    this.run(new TestKitchen())
-    this.run(new ArchiveArtifacts())
+//    this.run(new TestKitchen())
+//    this.run(new ArchiveArtifacts())
 
-    if (env.BRANCH_NAME == "master") {
-        this.run(new BerkshelfUpload())
-    }
-    (new SlackPostBuild()).execute()
+//    if (env.BRANCH_NAME == "master") {
+//        this.run(new BerkshelfUpload())
+//    }
+//    (new SlackPostBuild()).execute()
 }
 
 return this;
