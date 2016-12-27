@@ -17,11 +17,10 @@ def subscribeToUpstreamJobs() {
     for (i = 0; i < deps.size(); i++) {
         def cookbookName = deps[i]
 
-        echo "currentBuild: ${getCookbookName()}"
-//        if (cookbookName.equals(currentBuild.getName())) {
-//            echo "Skipping myself"
-//            continue
-//        }
+        if (cookbookName.equals(getCookbookName())) {
+            echo "Skipping myself"
+            continue
+        }
 
         def upstreamJobName = getUpstreamJobName(cookbookName)
         echo "#${i}: ${cookbookName} -> ${upstreamJobName}"
