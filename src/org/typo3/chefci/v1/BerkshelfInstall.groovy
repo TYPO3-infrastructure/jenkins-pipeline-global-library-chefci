@@ -12,29 +12,35 @@ def subscribeToUpstreamJobs() {
     def output = sh(script: "berks list -F json", returnStdout: true)
     def data = parseJson(output)
 
-    def deps = getCookbookDependencies(data)
+    // list of cookbook names
+    def ArrayList deps = getCookbookDependencies(data)
+
+    // stores the list of jobs for cookbooks that are a dependency of this cookbook
     def existingUpstreamCookbookJobs = []
+
+    // Jenkins CPS wtf
     for (i = 0; i < deps.size(); i++) {
         def cookbookName = deps[i]
 
+        // "berks list" includes the cookbook itself, skip this
         if (cookbookName.equals(getCookbookName())) {
-            echo "Skipping myself"
             continue
         }
 
+        // create the upstream job name, i.e. GithubOrg/cookbookName/branchName
         def upstreamJobName = getUpstreamJobName(cookbookName)
-        echo "#${i}: ${cookbookName} -> ${upstreamJobName}"
 
         if (jobExists(upstreamJobName)) {
-            echo "Adding upstream job #${upstreamJobName}"
+            // echo "Adding upstream job #${upstreamJobName}"
             existingUpstreamCookbookJobs << upstreamJobName
         } else {
-            echo "Skipping dependency ${cookbookName}"
+            // echo "Skipping dependency ${cookbookName}"
         }
     }
 
-    echo "Existing dependencies: ${existingUpstreamCookbookJobs}"
+    echo "Upstream jobs: ${existingUpstreamCookbookJobs}"
 
+    // set job properties to subscribe to upstream jobs
     properties([
         pipelineTriggers([
             upstream(
@@ -52,37 +58,20 @@ def parseJson(txt){
 
 @NonCPS
 def getCookbookDependencies(data) {
+    // extracts interesting data from `berks list -F json` output.
+    // reads the "cookbooks" entry of the Map and returns the "name" key of each
+    // result is an ArrayList of cookbook names
     return data.cookbooks.collect { it -> it.name }
 }
 
 @NonCPS
-def removeFromList(ArrayList list, item) {
-    return list.removeIf(it.eq(item))
-}
-//def setUpstreamJobs(cookbooks) {
-//    def existingJobs = filterExistingUpstreamJobs(cookbooks)
-//    echo "Existing upstream jobs: ${existingJobs}"
-//    // def upstreamList = existingJobs.join(', ')
-//    echo "Existing upstream job list: ${upstreamList}"
-//    properties([
-//            pipelineTriggers([
-//                    upstream(
-//                            // threshold: hudson.model.Result.SUCCESS,
-//                            upstreamProjects: upstreamList
-//                    )
-//            ])
-//    ])
-//
-//    // cookbooks.each { it }
-//}
-
-@NonCPS
 def getUpstreamJobName(String cookbook) {
-    //def jobName = "TYPO3-cookbooks/${cookbook}/develop"
 
+    // the name of the organization folder
     def folderName = currentBuild.rawBuild.getParent().getParent().getParent().getName()
-    def jobName = "${folderName}/${cookbook}/develop"
-    echo "Resulting job name: ${jobName}"
+
+    def jobName = "${folderName}/${cookbook}/master"
+    // echo "Resulting job name: ${jobName}"
     return jobName
 }
 
@@ -91,30 +80,14 @@ def getCookbookName() {
     return currentBuild.rawBuild.getParent().getParent().getName()
 }
 
+@NonCPS
 def jobExists(String jobName) {
+    // checks if a job exists
     def exists = (Jenkins.instance.getItemByFullName(jobName) != null)
-    echo exists ? "Job ${jobName} exists" : "Job ${jobName} does NOT exist"
+    // echo exists ? "Job ${jobName} exists" : "Job ${jobName} does NOT exist"
     return exists
 }
 
-//@NonCPS
-//def filterExistingUpstreamJobs(ArrayList cookbooks) {
-//    println "Filtering existing ones out of ${cookbooks}"
-//    //def existingCookbooks = cookbooks.collect{ name ->
-//    //    if (jobExists(name)) { name }
-//    //}
-//    //println "Existing cookbooks: ${existingCookbooks}"
-//    //return existingCookbooks.findAll()
-//    def existingUpstreamJobs = [:]
-//    for (cb in cookbooks) {
-//        if (cookbookJobExists(cb)) {
-//            existingUpstreamJobs << cb
-//        }
-//    }
-//    // def upstreamJobs = cookbooks.findAll { cookbook -> cookbookJobExists(cookbook) }
-//    println "Remaining upstream jobs: ${existingUpstreamJobs}"
-//    return existingUpstreamJobs
-//}
 
 def execute(){
     stage('resolve dependencies')
