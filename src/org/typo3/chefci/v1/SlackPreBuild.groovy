@@ -13,6 +13,7 @@ def execute(){
 @NonCPS
 def getCauses() {
     def causes = currentBuild.rawBuild.getCauses()
+    println "Number of causes: #{causes.size()}"
     return causes.collect{ it.getShortDescription() }.join(" / ")
 }
 
