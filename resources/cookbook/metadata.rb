@@ -15,5 +15,11 @@ field = ARGV.first || "version"
 metadata = Chef::Cookbook::Metadata.new
 metadata.from_file('metadata.rb')
 
+data = metadata.send(field)
+
 # output requested field (e.g. version, name)
-puts metadata.send(field)
+if data.is_a?(String)
+  puts data
+else
+  puts data.to_json
+end
