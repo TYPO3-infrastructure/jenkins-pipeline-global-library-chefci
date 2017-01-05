@@ -36,10 +36,13 @@ protected def bumpVersion(){
                 // TODO get rid of `bundle install`
                 sh 'chef exec bundle install'
                 // TODO make thor-scmversion globally accessible and get rid of `Thorfile`
+                // TODO see http://stackoverflow.com/questions/41474735/use-global-thorfile/41474996
                 sh "chef exec thor version:bump ${versionPart}"
                 def newVersion = readFile('VERSION')
-                // TODO push tag to Github
-                sh("berks upload")
+                // TODO enable Jenkins to push to Github
+                sh("git push origin ${newVersion}")
+                // TODO remove comment once we've finished this...
+                //sh("berks upload")
                 currentBuild.displayName = "#${currentBuild.getNumber()} - ${newVersion} (${versionPart})"
             } else {
                 currentBuild.displayName = "#${currentBuild.getNumber()} (no upload)"
