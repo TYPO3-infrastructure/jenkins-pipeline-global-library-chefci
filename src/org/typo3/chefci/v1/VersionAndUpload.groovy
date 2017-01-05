@@ -2,7 +2,11 @@
 
 package org.typo3.chefci.v1;
 
-def bumpVersion(){
+def execute(){
+    this.bumpVersion()
+}
+
+protected def bumpVersion(){
     def userInput = true
     def didTimeout = false
 
@@ -14,9 +18,9 @@ def bumpVersion(){
                 choice = new ChoiceParameterDefinition('Version Part:', ['patch', 'minor', 'major'] as String[], '')
                 versionPart = input message: 'Bump major, minor or patch version?', parameters: [choice]
             }
-        } catch(err) { // timeout reached or input false
+        } catch (err) { // error means we reached timeout
             def user = err.getCauses()[0].getUser()
-            if('SYSTEM' == user.toString()) { // SYSTEM means timeout.
+            if ('SYSTEM' == user.toString()) { // user == SYSTEM means timeout.
                 didTimeout = true
             } else {
                 userInput = false
@@ -24,35 +28,25 @@ def bumpVersion(){
             }
         }
 
-    }
-
-    node {
-        if (didTimeout) {
-            currentBuild.displayName = "#${currentBuild.getNumber()} (no upload)"
-            echo "No cookbook upload was triggered within timeout"
-        } else if (userInput == true) {
-            // TODO try to get rid of this step
-            sh 'chef exec bundle install'
-            sh "chef exec thor version:bump ${versionPart}"
-            def newVersion = readFile('VERSION')
-            // TODO push tag to Github
-            currentBuild.displayName = "#${currentBuild.getNumber()} - ${newVersion} (${versionPart})"
-        } else {
-            currentBuild.displayName = "#${currentBuild.getNumber()} (no upload)"
-            echo "No cookbook upload was triggered within timeout"
+        node {
+            if (didTimeout) {
+                currentBuild.displayName = "#${currentBuild.getNumber()} (no upload)"
+                echo "No cookbook upload was triggered within timeout"
+            } else if (userInput == true) {
+                // TODO get rid of `bundle install`
+                sh 'chef exec bundle install'
+                // TODO make thor-scmversion globally accessible and get rid of `Thorfile`
+                sh "chef exec thor version:bump ${versionPart}"
+                def newVersion = readFile('VERSION')
+                // TODO push tag to Github
+                sh("berks upload")
+                currentBuild.displayName = "#${currentBuild.getNumber()} - ${newVersion} (${versionPart})"
+            } else {
+                currentBuild.displayName = "#${currentBuild.getNumber()} (no upload)"
+                echo "No cookbook upload was triggered within timeout"
+            }
         }
     }
-}
-
-def berksUpload(){
-    node {
-        sh("berks upload")
-    }
-}
-
-def execute(){
-    this.bumpVersion()
-    this.berksUpload()
 }
 
 return this;
