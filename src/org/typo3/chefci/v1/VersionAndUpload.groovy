@@ -2,8 +2,6 @@
 
 package org.typo3.chefci.v1;
 
-import hudson.model
-
 def bumpVersion(){
     def userInput = true
     def didTimeout = false
