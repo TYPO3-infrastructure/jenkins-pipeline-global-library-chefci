@@ -8,7 +8,8 @@ public class HelloWorld extends AbstractStage {
 
     @Override
     void run() {
-        script.echo "Hello World!"
+        // script.echo "Hello World!"
+        printf "hallo welt"
     }
 
 }

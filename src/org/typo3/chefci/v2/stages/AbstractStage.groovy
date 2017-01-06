@@ -3,7 +3,7 @@ package org.typo3.chefci.v2.stages
 abstract public class AbstractStage implements Stage {
 
     def script
-    String stageName
+    def stageName
 
 
     AbstractStage(script, stageName) {
