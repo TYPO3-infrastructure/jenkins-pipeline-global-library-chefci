@@ -5,6 +5,8 @@ import org.typo3.chefci.v2.stages.Stage
 
 class Pipeline implements Serializable {
 
+    def script
+
     def stages = []
 
     static Pipeline create(script) {
@@ -13,10 +15,6 @@ class Pipeline implements Serializable {
         pipeline.addStage(new HelloWorld(pipeline, 'Hello World'))
         return pipeline
         
-    }
-
-    private def addStage(Stage stage) {
-        stages << stage
     }
 
     private Pipeline(def script) {
@@ -29,6 +27,10 @@ class Pipeline implements Serializable {
 
     def getScript() {
         return script
+    }
+
+    private def addStage(Stage stage) {
+        stages << stage
     }
 
 }
