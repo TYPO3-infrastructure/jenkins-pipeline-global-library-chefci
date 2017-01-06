@@ -10,7 +10,7 @@ class Pipeline implements Serializable {
     def stages = []
 
     static Pipeline create(script) {
-        // refactor to builder later on
+        // TODO refactor to builder later on
         def pipeline = new Pipeline(script)
         pipeline.addStage(new HelloWorld(script, 'Hello World'))
         return pipeline
@@ -23,7 +23,7 @@ class Pipeline implements Serializable {
 
     void execute() {
         stages.each {
-            it.execute
+            it.execute()
         }
     }
 
