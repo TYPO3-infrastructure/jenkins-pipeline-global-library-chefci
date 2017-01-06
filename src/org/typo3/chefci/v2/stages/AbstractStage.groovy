@@ -1,21 +1,17 @@
-package org.typo3.chefci.v2.stages;
-
-import org.typo3.chefci.v2.Pipeline;
+package org.typo3.chefci.v2.stages
 
 abstract public class AbstractStage implements Stage {
 
-    Pipeline pipeline
-    Object script
+    def script
     String stageName
 
 
-    AbstractStage(Pipeline pipeline, String stageName) {
-        this.pipeline = pipeline
-        this.script = pipeline.getScript()
+    AbstractStage(script, stageName) {
+        this.script = script
         this.stageName = stageName
     }
 
-    abstract void run();
+    abstract void run()
 
     @Override
     void execute() {

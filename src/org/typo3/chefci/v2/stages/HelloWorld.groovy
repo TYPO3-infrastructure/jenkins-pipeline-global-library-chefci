@@ -1,11 +1,9 @@
 package org.typo3.chefci.v2.stages
 
-import org.typo3.chefci.v2.Pipeline
-
 public class HelloWorld extends AbstractStage {
 
-    HelloWorld(Pipeline pipeline, String stageName) {
-        super(pipeline, stageName)
+    HelloWorld(script, String stageName) {
+        super(script, stageName)
     }
 
     @Override
