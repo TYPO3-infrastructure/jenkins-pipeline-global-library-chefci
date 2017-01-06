@@ -17,7 +17,8 @@ abstract public class AbstractStage implements Stage {
 
     abstract void run();
 
-    def execute() {
+    @Override
+    void execute() {
         script.stage(stageName) {
             run()
         }
