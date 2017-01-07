@@ -1,6 +1,6 @@
 package org.typo3.chefci.v2
 
-import org.typo3.chefci.v2.stages.HelloWorld
+import org.typo3.chefci.v2.stages.HelloWorld2
 import org.typo3.chefci.v2.stages.Stage
 
 class Pipeline implements Serializable {
@@ -12,7 +12,7 @@ class Pipeline implements Serializable {
     static Pipeline create(script) {
         // TODO refactor to builder later on
         def pipeline = new Pipeline(script)
-        pipeline.addStage(new HelloWorld(script, 'Hello World'))
+        pipeline.addStage(new HelloWorld2(script, 'Hello World'))
         return pipeline
         
     }
