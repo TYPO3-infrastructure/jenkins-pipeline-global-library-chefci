@@ -1,7 +1,6 @@
 package org.typo3.chefci.v2
 
-import org.typo3.chefci.v2.stages.HelloWorld2
-import org.typo3.chefci.v2.stages.Stage
+import org.typo3.chefci.v2.stages.HelloWorld
 
 class Pipeline implements Serializable {
 
@@ -9,26 +8,46 @@ class Pipeline implements Serializable {
 
     def stages = []
 
-    static Pipeline create(script) {
-        // TODO refactor to builder later on
-        def pipeline = new Pipeline(script)
-        pipeline.addStage(new HelloWorld2(script, 'Hello World'))
-        return pipeline
-        
+    def steps
+
+    static builder(script, steps) {
+        return new Builder(script, steps)
     }
 
-    private Pipeline(def script) {
-        this.script = script
+    static class Builder implements Serializable {
+
+        def stages = []
+
+        def script
+
+        def steps
+
+        Builder(def script, def steps) {
+            this.script = script
+            this.steps = steps
+        }
+
+        def withHelloWorldStage() {
+            stages << new HelloWorld(script, 'Hello World')
+            return this
+        }
+
+        def build() {
+            return new Pipeline(this)
+        }
+
+    }
+
+    private Pipeline(Builder builder) {
+        this.script = builder.script
+        this.stages = builder.stages
+        this.steps = builder.steps
     }
 
     void execute() {
         stages.each {
             it.execute()
         }
-    }
-
-    private void addStage(Stage stage) {
-        stages << stage
     }
 
 }
