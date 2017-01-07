@@ -36,6 +36,11 @@ class Pipeline implements Serializable {
             return new Pipeline(this)
         }
 
+        def buildDefaultPipeline() {
+            withHelloWorldStage()
+            return new Pipeline(this)
+        }
+
     }
 
     private Pipeline(Builder builder) {
