@@ -1,5 +1,6 @@
 package org.typo3.chefci.v2
 
+import org.typo3.chefci.v2.stages.GitCheckout
 import org.typo3.chefci.v2.stages.HelloWorld
 import org.typo3.chefci.v2.stages.Lint
 
@@ -33,6 +34,10 @@ class Pipeline implements Serializable {
             return this
         }
 
+        def withGitCheckoutStage() {
+            stages << new GitCheckout(script, 'Git Checkout')
+        }
+
         def withLintStage() {
             stages << new Lint(script, 'Linting')
         }
@@ -42,6 +47,7 @@ class Pipeline implements Serializable {
         }
 
         def buildDefaultPipeline() {
+            withGitCheckoutStage()
             withLintStage()
             return new Pipeline(this)
         }
@@ -55,18 +61,8 @@ class Pipeline implements Serializable {
     }
 
     void execute() {
-        prepare()
         stages.each {
             it.execute()
-        }
-    }
-
-    // TODO maybe this should be a stage on its own?
-    private prepare() {
-        script.node {
-            script.checkout(script.scm)
-            // we e.g. have a .kitchen.docker.yml left from the last run. Remove that.
-            script.sh("git clean -fdx")
         }
     }
 }
