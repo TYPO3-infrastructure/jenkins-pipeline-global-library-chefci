@@ -3,6 +3,7 @@ package org.typo3.chefci.v2
 import org.typo3.chefci.v2.stages.GitCheckout
 import org.typo3.chefci.v2.stages.HelloWorld
 import org.typo3.chefci.v2.stages.Lint
+import org.typo3.chefci.v2.stages.Stage
 
 class Pipeline implements Serializable {
 
@@ -61,11 +62,8 @@ class Pipeline implements Serializable {
     }
 
     void execute() {
-        script.echo "Number of stages: ${stages.size()}"
-        script.echo stages
-        stages.each { stage -> script.echo "no execute - stage: ${stage.stageName}"}
-        stages.each { stage ->
-            script.echo "Now running stage ${stage.stageName}"
+        // `stages.each { ... }` does not work, see https://issues.jenkins-ci.org/browse/JENKINS-26481
+        for (Stage stage : stages) {
             stage.execute()
         }
     }
