@@ -61,9 +61,13 @@ class Pipeline implements Serializable {
     }
 
     void execute() {
-        stages.each {
-            it.execute()
+        script.echo "Number of stages: ${stages.size()}"
+        script.echo stages
+        stages.each { stage -> script.echo "no execute - stage: ${stage.stageName}"}
+        stages.each { stage ->
+            script.echo "Now running stage ${stage.stageName}"
+            stage.execute()
         }
     }
-}
 
+}
