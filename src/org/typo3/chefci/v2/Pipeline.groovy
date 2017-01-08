@@ -55,10 +55,19 @@ class Pipeline implements Serializable {
     }
 
     void execute() {
+        prepare()
         stages.each {
             it.execute()
         }
     }
 
+    // TODO maybe this should be a stage on its own?
+    private prepare() {
+        script.node {
+            script.checkout(scm)
+            // we e.g. have a .kitchen.docker.yml left from the last run. Remove that.
+            script.sh("git clean -fdx")
+        }
+    }
 }
 
