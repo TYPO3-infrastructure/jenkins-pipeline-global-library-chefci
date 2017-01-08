@@ -1,6 +1,7 @@
 package org.typo3.chefci.v2
 
 import org.typo3.chefci.v2.stages.HelloWorld
+import org.typo3.chefci.v2.stages.Lint
 
 class Pipeline implements Serializable {
 
@@ -32,12 +33,16 @@ class Pipeline implements Serializable {
             return this
         }
 
+        def withLintStage() {
+            stages << new Lint(script, 'Linting')
+        }
+
         def build() {
             return new Pipeline(this)
         }
 
         def buildDefaultPipeline() {
-            withHelloWorldStage()
+            withLintStage()
             return new Pipeline(this)
         }
 
