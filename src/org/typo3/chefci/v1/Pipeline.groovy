@@ -38,11 +38,6 @@ def execute() {
     this.prepare()
 
     this.run(new Lint())
-    this.run(new VersionAndUpload())
-
-    /*
-
-    // temporarily commented out for implementing version & upload step
 
     this.run(new BerkshelfInstall())
     this.run(new TestKitchen())
@@ -52,7 +47,6 @@ def execute() {
         this.run(new BerkshelfUpload())
     }
     (new SlackPostBuild()).execute()
-    */
 }
 
 return this;
