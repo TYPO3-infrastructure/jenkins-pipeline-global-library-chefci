@@ -16,3 +16,12 @@ pipe.execute()
 - [Jenkins Pipeline Global Library](https://github.com/jenkinsci/workflow-cps-global-lib-plugin)
 - [Our Chef cookbooks](https://github.com/TYPO3-cookbooks)
 - [Our Jenkins server for Chef coobkook testing](https://chef-ci.typo3.org)
+
+Pipeline v2
+-----------
+
+The goal of the `v2` pipeline is to have a more object oriented approach for the implementation of the pipeline.
+
+### More Information
+
+- [Pipelines as Classes](http://stackoverflow.com/questions/39942442/how-to-extract-sections-of-jenkins-pipeline-script-into-classes)
