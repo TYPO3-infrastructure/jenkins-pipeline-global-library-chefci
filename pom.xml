@@ -53,31 +53,7 @@
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>oss-sonatype-staging</id>
-            <name>Sonatype Staging Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-        <snapshotRepository>
-            <id>oss-sonatype-snapshots</id>
-            <name>OSS Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <repositories>
-        <repository>
-            <id>oss-sonatype-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <name>OSS Sonatype Nexus Snapshots</name>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
         <repository>
             <id>repo.jenkins-ci.org</id>
             <url>http://repo.jenkins-ci.org/public/</url>
