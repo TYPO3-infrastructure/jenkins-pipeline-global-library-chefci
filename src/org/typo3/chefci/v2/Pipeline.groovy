@@ -1,5 +1,6 @@
 package org.typo3.chefci.v2
 
+import org.typo3.chefci.v2.stages.Acceptance
 import org.typo3.chefci.v2.stages.Build
 import org.typo3.chefci.v2.stages.GitCheckout
 import org.typo3.chefci.v2.stages.HelloWorld
@@ -51,6 +52,11 @@ class Pipeline implements Serializable {
             return this
         }
 
+        def withAcceptanceStage() {
+            stages << new Acceptance(script, 'Acceptance')
+            return this
+        }
+
         def build() {
             return new Pipeline(this)
         }
@@ -59,6 +65,7 @@ class Pipeline implements Serializable {
             withGitCheckoutStage()
             withLintStage()
             withBuildStage()
+            withAcceptanceStage()
             return new Pipeline(this)
         }
 
