@@ -29,8 +29,8 @@ class Publish extends AbstractStage {
      *
      * The returned Map contains the following keys:
      *
-     * - response: true, if response was received, false if input manually canceled or timed out
-     * - reason: 'user', if user hit Proceed or Cancel; 'timeout' if input dialog timed out
+     * - proceed: true, if the Proceed button was clicked, false if aborted manually aborted or timed out
+     * - reason: 'user', if user hit Proceed or Abort; 'timeout' if input dialog timed out
      * - submitter: name of the user that submitted or canceled the dialog
      * - additional keys for every parameter submitted via {@code inputOptions.parameters}
      *
@@ -49,17 +49,17 @@ class Publish extends AbstractStage {
                 Map responseValues = script.input args.inputOptions
                 script.echo "Submitted by ${responseValues.submitter}"
 
-                return [response: true, reason: 'user'] + responseValues
+                return [proceed: true, reason: 'user'] + responseValues
             }
         } catch (FlowInterruptedException err) { // error means we reached timeout
             // err.getCauses() returns [org.jenkinsci.plugins.workflow.support.steps.input.Rejection]
             Rejection rejection = err.getCauses().first()
 
             if ('SYSTEM' == rejection.getUser().toString()) { // user == SYSTEM means timeout.
-                return [response: false, reason: 'timeout']
-            } else { // explicitly canceled
+                return [proceed: false, reason: 'timeout']
+            } else { // explicitly aborted
                 script.echo rejection.getShortDescription()
-                return [response: true, reason: 'user', submitter: rejection.getUser()]
+                return [proceed: false, reason: 'user', submitter: rejection.getUser().toString()]
             }
         }
     }
@@ -73,7 +73,7 @@ class Publish extends AbstractStage {
 
         def newVersion
         // if we don't get any user response, we do nothing
-        if (userInput.response) {
+        if (userInput.proceed) {
             script.node{
                 newVersion = bumpVersion(userInput.versionBump)
                 upload()
