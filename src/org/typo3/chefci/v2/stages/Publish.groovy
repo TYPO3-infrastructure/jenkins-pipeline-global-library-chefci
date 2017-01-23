@@ -28,7 +28,7 @@ class Publish extends AbstractStage {
                 inputOptions.submitterParameter = "submitter"
 
                 def response = script.input inputOptions
-                script.echo response
+                println response
                 reason = response.submitter
             }
         } catch (FlowInterruptedException err) { // error means we reached timeout
