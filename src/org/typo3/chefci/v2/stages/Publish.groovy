@@ -98,7 +98,7 @@ class Publish extends AbstractStage {
                 // TODO remove comment once we've finished this...
                 //script.sh("berks upload")
                 script.echo "Could upload now"
-                jenkinsHelper.annotateBuildName(" - ${newVersion} (${input.versionBup})")
+                jenkinsHelper.annotateBuildName(" - ${newVersion} (${input.versionBump})")
             } else {
                 jenkinsHelper.annotateBuildName("(no upload)")
                 script.echo "No cookbook upload was triggered within timeout"
