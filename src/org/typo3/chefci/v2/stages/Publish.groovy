@@ -19,7 +19,7 @@ class Publish extends AbstractStage {
     }
 
     protected inputWithTimeout(Map args) {
-        def versionPart = null
+        def response = null
         def reason = null
         // see https://go.cloudbees.com/docs/support-kb-articles/CloudBees-Jenkins-Enterprise/Pipeline---How-to-add-an-input-step,-with-timeout,-that-continues-if-timeout-is-reached,-using-a-default-value.html
         try {
@@ -27,9 +27,9 @@ class Publish extends AbstractStage {
                 def inputOptions = args.inputOptions
                 inputOptions.submitterParameter = "submitter"
 
-                def response = script.input inputOptions
-                println response
+                response = script.input inputOptions
                 reason = response.submitter
+                script.echo "Submitted by ${reason}"
             }
         } catch (FlowInterruptedException err) { // error means we reached timeout
             // err.getCauses() returns [org.jenkinsci.plugins.workflow.support.steps.input.Rejection]
@@ -41,7 +41,7 @@ class Publish extends AbstractStage {
                 script.echo rejection.getShortDescription()
             }
         }
-        [response: versionPart, reason: reason]
+        response
     }
 
     protected publish() {
@@ -51,8 +51,8 @@ class Publish extends AbstractStage {
 
         // generate the input dialog for version bump.
         // contains the choices patch/minor/major.
-        // timeous out after specified time.
-        def choice = new ChoiceParameterDefinition('Version Part:', ['patch', 'minor', 'major'] as String[], '')
+        // timeouts out after specified time.
+        def choice = new ChoiceParameterDefinition('version', ['patch', 'minor', 'major'] as String[], 'Version Part:')
         def inputOptions = [message: 'Bump major, minor or patch version?', parameters: [choice]]
         def timeoutOptions = [time: 15, unit: 'SECONDS']
 
