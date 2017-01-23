@@ -20,7 +20,7 @@ class Publish extends AbstractStage {
 
     protected inputWithTimeout(Map args) {
         def response = null
-        Map reason = null
+        def reason = null
         // see https://go.cloudbees.com/docs/support-kb-articles/CloudBees-Jenkins-Enterprise/Pipeline---How-to-add-an-input-step,-with-timeout,-that-continues-if-timeout-is-reached,-using-a-default-value.html
         try {
             script.timeout(args.timeoutOptions) {
