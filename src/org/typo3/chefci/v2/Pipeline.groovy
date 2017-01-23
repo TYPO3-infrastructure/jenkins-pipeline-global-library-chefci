@@ -5,6 +5,7 @@ import org.typo3.chefci.v2.stages.Build
 import org.typo3.chefci.v2.stages.GitCheckout
 import org.typo3.chefci.v2.stages.HelloWorld
 import org.typo3.chefci.v2.stages.Lint
+import org.typo3.chefci.v2.stages.Publish
 import org.typo3.chefci.v2.stages.Stage
 
 class Pipeline implements Serializable {
@@ -57,6 +58,11 @@ class Pipeline implements Serializable {
             return this
         }
 
+        def withPublishStage() {
+            stages << new Publish(script, 'Publish')
+            return this
+        }
+
         def build() {
             return new Pipeline(this)
         }
@@ -66,6 +72,7 @@ class Pipeline implements Serializable {
             withLintStage()
             withBuildStage()
             withAcceptanceStage()
+            withPublishStage()
             return new Pipeline(this)
         }
 
