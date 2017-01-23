@@ -59,7 +59,7 @@ class Publish extends AbstractStage {
         // call the input dialog
         Map input = inputWithTimeout([inputOptions: inputOptions, timeoutOptions: timeoutOptions])
 
-        println "Got input ${input}"
+        script.echo "Got input ${input}"
 
 //        script.node {
 //            def jenkinsHelper = new JenkinsHelper(script)
