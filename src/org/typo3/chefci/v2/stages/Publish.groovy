@@ -19,29 +19,32 @@ class Publish extends AbstractStage {
     }
 
     protected inputWithTimeout(Map args) {
-        def response = null
-        def reason = null
+       def reason = null
         // see https://go.cloudbees.com/docs/support-kb-articles/CloudBees-Jenkins-Enterprise/Pipeline---How-to-add-an-input-step,-with-timeout,-that-continues-if-timeout-is-reached,-using-a-default-value.html
         try {
             script.timeout(args.timeoutOptions) {
                 def inputOptions = args.inputOptions
                 inputOptions.submitterParameter = "submitter"
 
-                response = script.input args.inputOptions
+                // as we ask for the submitter, we get a Map back instead of a string
+                Map response = script.input args.inputOptions
                 script.echo "Submitted by ${response.submitter}"
-                reason = response.submitter
+
+                return response + [reason: 'user']
             }
         } catch (FlowInterruptedException err) { // error means we reached timeout
             // err.getCauses() returns [org.jenkinsci.plugins.workflow.support.steps.input.Rejection]
             Rejection rejection = err.getCauses().first()
+
             if ('SYSTEM' == rejection.getUser().toString()) { // user == SYSTEM means timeout.
                 reason = 'timeout'
             } else {
                 reason = 'user'
                 script.echo rejection.getShortDescription()
             }
+
+            return [response: null, reason: reason]
         }
-        [response: response, reason: reason]
     }
 
     protected publish() {
