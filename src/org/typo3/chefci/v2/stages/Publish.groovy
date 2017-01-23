@@ -41,7 +41,7 @@ class Publish extends AbstractStage {
                 script.echo rejection.getShortDescription()
             }
         }
-        response + [reason: reason]
+        [response: response, reason: reason]
     }
 
     protected publish() {
