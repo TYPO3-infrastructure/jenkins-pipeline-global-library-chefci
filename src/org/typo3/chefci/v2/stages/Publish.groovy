@@ -18,55 +18,69 @@ class Publish extends AbstractStage {
         }
     }
 
-    protected publish() {
-        def userInput = true
-        def didTimeout = false
-        def versionPart
-
-        def choice = new ChoiceParameterDefinition('Version Part:', ['patch', 'minor', 'major'] as String[], '')
-        def inputOptions = [message: 'Bump major, minor or patch version?', parameters: [choice]]
-        def timeoutOptions = [time: 15, unit: 'SECONDS']
-
+    protected inputWithTimeout(Map args) {
+        def versionPart = null
+        def reason = null
         // see https://go.cloudbees.com/docs/support-kb-articles/CloudBees-Jenkins-Enterprise/Pipeline---How-to-add-an-input-step,-with-timeout,-that-continues-if-timeout-is-reached,-using-a-default-value.html
         try {
-            script.timeout(timeoutOptions) {
-                versionPart = script.input inputOptions
+            script.timeout(args.timeoutOptions) {
+                def inputOptions = args.inputOptions
+                inputOptions.submitterParameter = "submitter"
+
+                def response = script.input inputOptions
+                script.echo response
+                reason = response.submitter
             }
         } catch (FlowInterruptedException err) { // error means we reached timeout
             // err.getCauses() returns [org.jenkinsci.plugins.workflow.support.steps.input.Rejection]
             Rejection rejection = err.getCauses().first()
             if ('SYSTEM' == rejection.getUser().toString()) { // user == SYSTEM means timeout.
-                didTimeout = true
+                reason = 'timeout'
             } else {
-                userInput = false
+                reason = 'user'
                 script.echo rejection.getShortDescription()
             }
         }
+        [response: versionPart, reason: reason]
+    }
 
-        script.node {
-            def jenkinsHelper = new JenkinsHelper(script)
+    protected publish() {
+        def userInput = true
+        def didTimeout = false
+        def versionPart
 
-            if (didTimeout) {
-                jenkinsHelper.annotateBuildName("(no upload)")
-                script.echo "No cookbook upload was triggered within timeout"
-            } else if (userInput == true) {
-                // TODO get rid of `bundle install`
-                script.sh 'chef exec bundle install'
-                // TODO make thor-scmversion globally accessible and get rid of `Thorfile`
-                // TODO see http://stackoverflow.com/questions/41474735/use-global-thorfile/41474996
-                script.sh "chef exec thor version:bump ${versionPart}"
-                def newVersion = script.readFile('VERSION')
-                // TODO enable Jenkins to push to Github
-                // sh("git push origin ${newVersion}")
-                // TODO remove comment once we've finished this...
-                //script.sh("berks upload")
-                script.echo "Could upload now"
-                jenkinsHelper.annotateBuildName(" - ${newVersion} (${versionPart})")
-            } else {
-                jenkinsHelper.annotateBuildName("(no upload)")
-                script.echo "No cookbook upload was triggered within timeout"
-            }
-        }
+        // generate the input dialog for version bump.
+        // contains the choices patch/minor/major.
+        // timeous out after specified time.
+        def choice = new ChoiceParameterDefinition('Version Part:', ['patch', 'minor', 'major'] as String[], '')
+        def inputOptions = [message: 'Bump major, minor or patch version?', parameters: [choice]]
+        def timeoutOptions = [time: 15, unit: 'SECONDS']
+
+        // call the input dialog
+        Map inputValues = inputWithTimeout([inputOptions: inputOptions, timeoutOptions: timeoutOptions])
+
+
+//        script.node {
+//            def jenkinsHelper = new JenkinsHelper(script)
+//
+//            if (inputValues.version) {
+//                // TODO get rid of `bundle install`
+//                script.sh 'chef exec bundle install'
+//                // TODO make thor-scmversion globally accessible and get rid of `Thorfile`
+//                // TODO see http://stackoverflow.com/questions/41474735/use-global-thorfile/41474996
+//                script.sh "chef exec thor version:bump ${versionPart}"
+//                def newVersion = script.readFile('VERSION')
+//                // TODO enable Jenkins to push to Github
+//                // sh("git push origin ${newVersion}")
+//                // TODO remove comment once we've finished this...
+//                //script.sh("berks upload")
+//                script.echo "Could upload now"
+//                jenkinsHelper.annotateBuildName(" - ${newVersion} (${versionPart})")
+//            } else {
+//                jenkinsHelper.annotateBuildName("(no upload)")
+//                script.echo "No cookbook upload was triggered within timeout"
+//            }
+//        }
     }
 
 }
