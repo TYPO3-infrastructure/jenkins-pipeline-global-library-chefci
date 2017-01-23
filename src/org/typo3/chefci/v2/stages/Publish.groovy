@@ -23,11 +23,14 @@ class Publish extends AbstractStage {
         def didTimeout = false
         def versionPart
 
+        def choice = new ChoiceParameterDefinition('Version Part:', ['patch', 'minor', 'major'] as String[], '')
+        def inputOptions = [message: 'Bump major, minor or patch version?', parameters: [choice]]
+        def timeoutOptions = [time: 15, unit: 'SECONDS']
+
         // see https://go.cloudbees.com/docs/support-kb-articles/CloudBees-Jenkins-Enterprise/Pipeline---How-to-add-an-input-step,-with-timeout,-that-continues-if-timeout-is-reached,-using-a-default-value.html
         try {
-            script.timeout(time: 15, unit: 'SECONDS') {
-                def choice = new ChoiceParameterDefinition('Version Part:', ['patch', 'minor', 'major'] as String[], '')
-                versionPart = script.input message: 'Bump major, minor or patch version?', parameters: [choice]
+            script.timeout(timeoutOptions) {
+                versionPart = script.input inputOptions
             }
         } catch (FlowInterruptedException err) { // error means we reached timeout
             // err.getCauses() returns [org.jenkinsci.plugins.workflow.support.steps.input.Rejection]
