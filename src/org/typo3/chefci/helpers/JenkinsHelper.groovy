@@ -33,4 +33,13 @@ class JenkinsHelper implements Serializable {
         steps.echo "copyGlobalLibraryScript: copied ${srcPath} to ${destPath}"
         return destPath
     }
+
+    /**
+     * Annotates the build namme (#i by default) with some text, e.g., the version built.
+     *
+     * @param text Text to add to {@code currentBuild.displayName}
+     */
+    def annotateBuildName(String text) {
+        steps.currentBuild.displayName = "#${steps.currentBuild.getNumber()} ${text}"
+    }
 }

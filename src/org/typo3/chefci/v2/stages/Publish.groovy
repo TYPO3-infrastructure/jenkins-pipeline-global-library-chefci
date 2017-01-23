@@ -3,6 +3,7 @@ package org.typo3.chefci.v2.stages
 import hudson.model.ChoiceParameterDefinition
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 import org.jenkinsci.plugins.workflow.support.steps.input.Rejection
+import org.typo3.chefci.helpers.JenkinsHelper
 
 class Publish extends AbstractStage {
 
@@ -40,9 +41,10 @@ class Publish extends AbstractStage {
         }
 
         script.node {
-            def currentBuild = script.currentBuild
+            def jenkinsHelper = new JenkinsHelper(script)
+
             if (didTimeout) {
-                currentBuild.displayName = "#${currentBuild.getNumber()} (no upload)"
+                jenkinsHelper.annotateBuildName("(no upload)")
                 script.echo "No cookbook upload was triggered within timeout"
             } else if (userInput == true) {
                 // TODO get rid of `bundle install`
@@ -56,9 +58,9 @@ class Publish extends AbstractStage {
                 // TODO remove comment once we've finished this...
                 //script.sh("berks upload")
                 script.echo "Could upload now"
-                currentBuild.displayName = "#${currentBuild.getNumber()} - ${newVersion} (${versionPart})"
+                jenkinsHelper.annotateBuildName(" - ${newVersion} (${versionPart})")
             } else {
-                currentBuild.displayName = "#${currentBuild.getNumber()} (no upload)"
+                jenkinsHelper.annotateBuildName("(no upload)")
                 script.echo "No cookbook upload was triggered within timeout"
             }
         }
