@@ -15,10 +15,9 @@ class Acceptance extends AbstractStage {
         }
     }
 
-    private def testkitchen(){
+    private testkitchen() {
         script.node {
 
-            def jenkinsHelper = new JenkinsHelper(script)
             jenkinsHelper.copyGlobalLibraryScript 'cookbook/.kitchen.docker.yml', '.kitchen.docker.yml'
 
             script.wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "XTerm"]) {

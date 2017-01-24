@@ -9,7 +9,6 @@ class Publish extends AbstractStage {
 
     Publish(Object script, String stageName) {
         super(script, stageName)
-        jenkinsHelper = new JenkinsHelper(script)
     }
 
     @Override
