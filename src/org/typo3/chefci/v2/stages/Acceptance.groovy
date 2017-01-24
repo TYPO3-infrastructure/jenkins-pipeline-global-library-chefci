@@ -4,7 +4,7 @@ class Acceptance extends AbstractStage {
 
     /*
      Name of the file that is placed inside the cookbook folder.
-     Can be changed using synthetic method setKitchenLocalYmlName
+     Can be changed using setKitchenLocalYmlName('.kitchen.docker.yml')
       */
     def kitchenLocalYmlName = '.kitchen.local.yml'
 
@@ -17,6 +17,11 @@ class Acceptance extends AbstractStage {
         script.stage(stageName) {
             testkitchen()
         }
+    }
+
+    void setKitchenLocalYmlName(String filename) {
+        kitchenLocalYmlName = filename
+        this
     }
 
     private testkitchen() {
