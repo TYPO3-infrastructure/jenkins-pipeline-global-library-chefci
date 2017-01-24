@@ -49,6 +49,7 @@ class Pipeline implements Serializable {
 
         def withAcceptanceStage() {
             stages << new Acceptance(script, 'Acceptance')
+                    .setKitchenLocalYmlName('.kitchen.docker.yml')
             return this
         }
 

@@ -1,8 +1,12 @@
 package org.typo3.chefci.v2.stages
 
-import org.typo3.chefci.helpers.JenkinsHelper
-
 class Acceptance extends AbstractStage {
+
+    /*
+     Name of the file that is placed inside the cookbook folder.
+     Can be changed using synthetic method setKitchenLocalYmlName
+      */
+    def kitchenLocalYmlName = '.kitchen.local.yml'
 
     Acceptance(Object script, String stageName) {
         super(script, stageName)
@@ -18,10 +22,10 @@ class Acceptance extends AbstractStage {
     private testkitchen() {
         script.node {
 
-            jenkinsHelper.copyGlobalLibraryScript 'cookbook/.kitchen.docker.yml', '.kitchen.docker.yml'
+            createKitchenYaml()
 
             script.wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "XTerm"]) {
-                script.withEnv(['KITCHEN_LOCAL_YAML=.kitchen.docker.yml']) {
+                script.withEnv(["KITCHEN_LOCAL_YAML=${kitchenLocalYmlName}"]) {
                     try {
                         script.sh script: 'kitchen test --destroy always'
                     } catch (err) {
@@ -31,6 +35,22 @@ class Acceptance extends AbstractStage {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Checks if a local kitchen config file (defaults to .kitchen.local.yml) already exists
+     * and places the one from this library otherwise (resources/cookbook/ folder).
+     */
+    private createKitchenYaml() {
+
+        if (! kitchenLocalYmlName) {
+            script.echo "No local kitchen config file specified. Doing nothing."
+        } else if (script.fileExists(kitchenLocalYmlName)) {
+            script.echo "Using the cookbook's ${kitchenLocalYmlName}"
+        } else {
+            script.echo "Placing default ${kitchenLocalYmlName} file in workspace"
+            jenkinsHelper.copyGlobalLibraryScript "cookbook/${kitchenLocalYmlName}", kitchenLocalYmlName
         }
     }
 
