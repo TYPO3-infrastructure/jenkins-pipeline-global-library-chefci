@@ -1,12 +1,12 @@
 package org.typo3.chefci.v2.stages
 
 class Acceptance extends AbstractStage {
-
     /*
      Name of the file that is placed inside the cookbook folder.
-     Can be changed using setKitchenLocalYmlName('.kitchen.docker.yml')
+     Can be changed using setKitchenLocalYml('.kitchen.docker.yml')
       */
     def kitchenLocalYmlName = '.kitchen.local.yml'
+
 
     Acceptance(Object script, String stageName) {
         super(script, stageName)
@@ -19,7 +19,7 @@ class Acceptance extends AbstractStage {
         }
     }
 
-    void setKitchenLocalYmlName(String filename) {
+    void setKitchenLocalYml(String filename) {
         kitchenLocalYmlName = filename
         this
     }
