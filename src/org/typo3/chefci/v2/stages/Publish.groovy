@@ -61,7 +61,7 @@ class Publish extends AbstractStage {
         def timeoutOptions = [time: 15, unit: 'SECONDS']
 
         // call the input dialog
-        Map inputValues = jenkinsHelper.HinputWithTimeout([inputOptions: inputOptions, timeoutOptions: timeoutOptions])
+        Map inputValues = jenkinsHelper.inputWithTimeout([inputOptions: inputOptions, timeoutOptions: timeoutOptions])
 
         script.echo "Got input ${inputValues}"
 
