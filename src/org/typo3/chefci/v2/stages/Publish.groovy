@@ -5,8 +5,6 @@ import org.typo3.chefci.helpers.JenkinsHelper
 
 class Publish extends AbstractStage {
 
-    JenkinsHelper jenkinsHelper
-
     Publish(Object script, String stageName) {
         super(script, stageName)
     }
