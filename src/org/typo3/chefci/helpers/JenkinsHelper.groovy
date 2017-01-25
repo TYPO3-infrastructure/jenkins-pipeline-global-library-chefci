@@ -99,6 +99,6 @@ class JenkinsHelper implements Serializable {
      */
     @NonCPS
     List<String> getBuildCauses() {
-        steps.currentBuild.rawBuild.getCauses().collect{ it.getShortDescription() }
+        script.currentBuild.rawBuild.getCauses().collect{ it.getShortDescription() }
     }
 }

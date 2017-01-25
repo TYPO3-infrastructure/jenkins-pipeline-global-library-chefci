@@ -1,5 +1,6 @@
 package org.typo3.chefci.v2
 
+import org.typo3.chefci.helpers.Slack
 import org.typo3.chefci.v2.stages.*
 import org.jenkinsci.plugins.workflow.cps.DSL
 
@@ -85,10 +86,14 @@ class Pipeline implements Serializable {
     }
 
     void execute() {
+        (new Slack(script)).buildStart()
+
         // `stages.each { ... }` does not work, see https://issues.jenkins-ci.org/browse/JENKINS-26481
         for (Stage stage : stages) {
             stage.execute()
         }
+
+        (new Slack(script)).buildFinish()
     }
 
 }
