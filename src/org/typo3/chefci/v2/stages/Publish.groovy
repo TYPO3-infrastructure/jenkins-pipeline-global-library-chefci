@@ -1,7 +1,7 @@
 package org.typo3.chefci.v2.stages
 
 import hudson.model.ChoiceParameterDefinition
-import org.typo3.chefci.helpers.JenkinsHelper
+import org.typo3.chefci.helpers.Slack
 
 class Publish extends AbstractStage {
 
@@ -20,6 +20,8 @@ class Publish extends AbstractStage {
      * Asks the user whether the cookbook should be uploaded
      */
     protected publish() {
+
+        (new Slack(script)).notifyVersionBump()
 
         def userInput = getInput()
 

@@ -21,19 +21,22 @@ class Slack implements Serializable {
     }
 
     def buildStart() {
-        send "${script.env.JOB_NAME} build #${script.env.BUILD_NUMBER} *started*:\n${jenkinsHelper.getBuildCauses()}\n  ${script.env.BUILD_URL}"
+        send "${script.env.JOB_NAME} build #${script.env.BUILD_NUMBER} *started*:\n${jenkinsHelper.getBuildCauses()}\n${script.env.BUILD_URL}"
     }
 
     def buildFinish() {
         def status = (script.currentBuild.result != 'FAILURE') ? 'good' : 'danger'
 
         send(
-                message: "${script.env.JOB_NAME} build #${script.env.BUILD_NUMBER} *finished*:\n  ${script.env.BUILD_URL}",
+                message: "${script.env.JOB_NAME} build #${script.env.BUILD_NUMBER} *finished*:\n${script.env.BUILD_URL}",
                 color: status,
         )
     }
 
-    def buildFailed() {
-
+    def notifyVersionBump() {
+        send(
+                message: "${script.env.JOB_NAME} build #${script.env.BUILD_NUMBER} *waiting for input*:\n${script.env.BUILD_URL}",
+                color: 'warning',
+        )
     }
 }
