@@ -67,7 +67,11 @@ class Pipeline implements Serializable {
             withLintStage()
             withBuildStage()
             withAcceptanceStage()
-            withPublishStage()
+
+            if (script.env.BRANCH_NAME == 'master') {
+                withPublishStage()
+            }
+
             return new Pipeline(this)
         }
 
