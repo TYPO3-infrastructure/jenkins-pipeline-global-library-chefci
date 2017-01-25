@@ -1,13 +1,16 @@
 package org.typo3.chefci.helpers
 
+import com.cloudbees.groovy.cps.NonCPS
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 import org.jenkinsci.plugins.workflow.support.steps.input.Rejection
-import com.cloudbees.groovy.cps.NonCPS
 
 class JenkinsHelper implements Serializable {
-    def steps
 
-    JenkinsHelper(steps) { this.steps = steps }
+    def script
+
+    JenkinsHelper(script) {
+        this.script = script
+    }
 
     /**
      * Generates a path to a temporary file location, ending with {@code path} parameter.
@@ -17,7 +20,7 @@ class JenkinsHelper implements Serializable {
      */
     @NonCPS
     String createTempLocation(String path) {
-        String tmpDir = steps.pwd tmp: true
+        String tmpDir = script.pwd tmp: true
         return tmpDir + File.separator + new File(path).getName()
     }
 
@@ -32,9 +35,9 @@ class JenkinsHelper implements Serializable {
 
         destPath = destPath ?: createTempLocation(srcPath)
         // writeFile does not overwrite, so we delete the file first
-        steps.deleteFile destPath
-        steps.writeFile file: destPath, text: steps.libraryResource(srcPath)
-        steps.echo "copyGlobalLibraryScript: copied ${srcPath} to ${destPath}"
+        script.deleteFile destPath
+        script.writeFile file: destPath, text: script.libraryResource(srcPath)
+        script.echo "copyGlobalLibraryScript: copied ${srcPath} to ${destPath}"
         return destPath
     }
 
@@ -44,7 +47,7 @@ class JenkinsHelper implements Serializable {
      * @param text Text to add to {@code currentBuild.displayName}
      */
     def annotateBuildName(String text) {
-        steps.currentBuild.displayName = "#${steps.currentBuild.getNumber()} ${text}"
+        script.currentBuild.displayName = "#${script.currentBuild.getNumber()} ${text}"
     }
 
     /**
@@ -60,31 +63,31 @@ class JenkinsHelper implements Serializable {
      * - submitter: name of the user that submitted or canceled the dialog
      * - additional keys for every parameter submitted via {@code inputOptions.parameters}
      *
-     * @param args Map containing inputOptions and timoutOptions, both passed to respective steps
+     * @param args Map containing inputOptions and timoutOptions, both passed to respective script
      * @return Map containing above specified keys response/reason/submitter and those for parameters
      */
     Map inputWithTimeout(Map args) {
         // see https://go.cloudbees.com/docs/support-kb-articles/CloudBees-Jenkins-Enterprise/Pipeline---How-to-add-an-input-step,-with-timeout,-that-continues-if-timeout-is-reached,-using-a-default-value.html
         try {
-            steps.timeout(args.timeoutOptions) {
+            script.timeout(args.timeoutOptions) {
                 def inputOptions = args.inputOptions
                 inputOptions.submitterParameter = "submitter"
 
                 // as we ask for the submitter, we get a Map back instead of a string
                 // besides the parameter supplied using args.inputOptions, this will include "submitter"
-                Map responseValues = steps.input args.inputOptions
-                steps.echo "Submitted by ${responseValues.submitter}"
+                Map responseValues = script.input args.inputOptions
+                script.echo "Submitted by ${responseValues.submitter}"
 
                 return [proceed: true, reason: 'user'] + responseValues
             }
         } catch (FlowInterruptedException err) { // error means we reached timeout
-            // err.getCauses() returns [org.jenkinsci.plugins.workflow.support.steps.input.Rejection]
+            // err.getCauses() returns [org.jenkinsci.plugins.workflow.support.script.input.Rejection]
             Rejection rejection = err.getCauses().first()
 
             if ('SYSTEM' == rejection.getUser().toString()) { // user == SYSTEM means timeout.
                 return [proceed: false, reason: 'timeout']
             } else { // explicitly aborted
-                steps.echo rejection.getShortDestepsion()
+                script.echo rejection.getShortDestepsion()
                 return [proceed: false, reason: 'user', submitter: rejection.getUser().toString()]
             }
         }
