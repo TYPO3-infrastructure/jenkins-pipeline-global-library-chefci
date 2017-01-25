@@ -92,4 +92,13 @@ class JenkinsHelper implements Serializable {
             }
         }
     }
+
+    /**
+     * Returns a list of the short descriptions the build causes that triggered this build.
+     * @return List of build causes
+     */
+    @NonCPS
+    List<String> getBuildCauses() {
+        steps.currentBuild.rawBuild.getCauses().collect{ it.getShortDescription() }
+    }
 }
