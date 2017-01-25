@@ -1,6 +1,7 @@
 package org.typo3.chefci.v2
 
 import org.typo3.chefci.v2.stages.*
+import org.jenkinsci.plugins.workflow.cps.DSL
 
 class Pipeline implements Serializable {
 
@@ -8,9 +9,9 @@ class Pipeline implements Serializable {
 
     def stages = []
 
-    def steps
+    DSL steps
 
-    static builder(script, steps) {
+    static builder(script, DSL steps) {
         return new Builder(script, steps)
     }
 
@@ -20,9 +21,9 @@ class Pipeline implements Serializable {
 
         def script
 
-        def steps
+        DSL steps
 
-        Builder(def script, def steps) {
+        Builder(def script, DSL steps) {
             this.script = script
             this.steps = steps
         }
