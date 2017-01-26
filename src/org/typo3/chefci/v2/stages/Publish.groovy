@@ -72,6 +72,8 @@ class Publish extends AbstractStage {
      * @return new version number
      */
     protected String bumpVersion(String level) {
+        jenkinsHelper.copyGlobalLibraryScript 'cookbook/Gemfile', 'Gemfile'
+        jenkinsHelper.copyGlobalLibraryScript 'cookbook/Thorfile', 'Thorfile'
         // TODO get rid of `bundle install`
         script.sh 'chef exec bundle install'
         // TODO make thor-scmversion globally accessible and get rid of `Thorfile`
@@ -79,7 +81,7 @@ class Publish extends AbstractStage {
         script.sh "chef exec thor version:bump ${level}"
         def newVersion = script.readFile('VERSION')
         // TODO enable Jenkins to push to Github
-        // sh("git push origin ${newVersion}")
+        script.sh("git push origin ${newVersion}")
 
         newVersion
     }
