@@ -86,6 +86,7 @@ class Publish extends AbstractStage {
         script.withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
             // this was the coolest way to not store the password that I found
             // http://stackoverflow.com/questions/33570075/tag-a-repo-from-a-jenkins-workflow-script
+            // (there is a warning "warning: invalid credential line: get", but doesn't matter)
             // yes, using HTTPS, because we have an API token already!
             script.sh("git config credential.username ${script.env.GIT_USERNAME}")
             script.sh("git config credential.helper '!echo password=\$GIT_PASSWORD; echo'")
@@ -102,8 +103,6 @@ class Publish extends AbstractStage {
      * @return
      */
     protected upload() {
-        // TODO remove comment once we've finished this...
-        //script.sh("berks upload")
-        script.echo "Could upload now"
+        script.sh("berks upload")
     }
 }
