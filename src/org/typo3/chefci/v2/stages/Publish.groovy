@@ -55,7 +55,7 @@ class Publish extends AbstractStage {
         // timeouts out after specified time.
         def choice = new ChoiceParameterDefinition('versionBump', ['patch', 'minor', 'major'] as String[], 'Version Part:')
         def inputOptions = [message: 'Bump major, minor or patch version?', parameters: [choice]]
-        def timeoutOptions = [time: 15, unit: 'SECONDS']
+        def timeoutOptions = [time: 15, unit: 'MINUTES']
 
         // call the input dialog
         Map inputValues = jenkinsHelper.inputWithTimeout([inputOptions: inputOptions, timeoutOptions: timeoutOptions])
@@ -72,14 +72,25 @@ class Publish extends AbstractStage {
      * @return new version number
      */
     protected String bumpVersion(String level) {
+        jenkinsHelper.copyGlobalLibraryScript 'cookbook/Gemfile', 'Gemfile'
+        jenkinsHelper.copyGlobalLibraryScript 'cookbook/Thorfile', 'Thorfile'
         // TODO get rid of `bundle install`
         script.sh 'chef exec bundle install'
         // TODO make thor-scmversion globally accessible and get rid of `Thorfile`
         // TODO see http://stackoverflow.com/questions/41474735/use-global-thorfile/41474996
         script.sh "chef exec thor version:bump ${level}"
         def newVersion = script.readFile('VERSION')
-        // TODO enable Jenkins to push to Github
-        // sh("git push origin ${newVersion}")
+
+        // TODO
+        def credentialsId = 'github-chefcitypo3org-token'
+        script.withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
+            // this was the coolest way to not store the password that I found
+            // http://stackoverflow.com/questions/33570075/tag-a-repo-from-a-jenkins-workflow-script
+            // yes, using HTTPS, because we have an API token already!
+            script.sh("git config credential.username ${script.env.GIT_USERNAME}")
+            script.sh("git config credential.helper '!echo password=\$GIT_PASSWORD; echo'")
+            script.sh("GIT_ASKPASS=true git push origin ${newVersion}")
+        }
 
         newVersion
     }
