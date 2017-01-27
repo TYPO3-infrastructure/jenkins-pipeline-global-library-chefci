@@ -16,8 +16,8 @@ class Acceptance extends AbstractStage {
     def stashName = 'cookbook-tk'
 
 
-    Acceptance(Object script, String stageName, JenkinsHelper jenkinsHelper, Slack slack) {
-        super(script, stageName, jenkinsHelper, slack)
+    Acceptance(Object script, JenkinsHelper jenkinsHelper, Slack slack) {
+        super(script, 'Acceptance', jenkinsHelper, slack)
     }
 
     @Override

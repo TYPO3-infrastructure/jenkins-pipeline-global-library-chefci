@@ -6,8 +6,8 @@ import org.typo3.chefci.helpers.Slack
 
 class Publish extends AbstractStage {
 
-    Publish(Object script, String stageName, JenkinsHelper jenkinsHelper, Slack slack) {
-        super(script, stageName, jenkinsHelper, slack)
+    Publish(Object script, JenkinsHelper jenkinsHelper, Slack slack) {
+        super(script, 'Publish', jenkinsHelper, slack)
     }
 
     @Override

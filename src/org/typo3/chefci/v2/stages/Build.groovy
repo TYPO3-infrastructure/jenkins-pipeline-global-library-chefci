@@ -5,8 +5,8 @@ import org.typo3.chefci.helpers.Slack
 
 class Build extends AbstractStage {
 
-    Build(Object script, String stageName, JenkinsHelper jenkinsHelper, Slack slack) {
-        super(script, stageName, jenkinsHelper, slack)
+    Build(Object script,  JenkinsHelper jenkinsHelper, Slack slack) {
+        super(script, 'Build', jenkinsHelper, slack)
     }
 
     @Override

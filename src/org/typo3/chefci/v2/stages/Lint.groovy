@@ -5,8 +5,8 @@ import org.typo3.chefci.helpers.Slack
 
 class Lint extends AbstractStage {
 
-    Lint(Object script, String stageName, JenkinsHelper jenkinsHelper, Slack slack) {
-        super(script, stageName, jenkinsHelper, slack)
+    Lint(Object script, JenkinsHelper jenkinsHelper, Slack slack) {
+        super(script, 'Lint', jenkinsHelper, slack)
     }
 
     @Override

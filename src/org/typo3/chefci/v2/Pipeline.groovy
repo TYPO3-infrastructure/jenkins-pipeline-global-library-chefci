@@ -41,33 +41,33 @@ class Pipeline implements Serializable {
         }
 
         def withHelloWorldStage() {
-            stages << new HelloWorld(script, 'Hello World', jenkinsHelper, slack )
+            stages << new HelloWorld(script, jenkinsHelper, slack )
             return this
         }
 
         def withGitCheckoutStage() {
-            stages << new GitCheckout(script, 'Git Checkout', jenkinsHelper, slack)
+            stages << new GitCheckout(script, jenkinsHelper, slack)
             return this
         }
 
         def withLintStage() {
-            stages << new Lint(script, 'Linting', jenkinsHelper, slack)
+            stages << new Lint(script, jenkinsHelper, slack)
             return this
         }
 
         def withBuildStage() {
-            stages << new Build(script, 'Build', jenkinsHelper, slack)
+            stages << new Build(script, jenkinsHelper, slack)
             return this
         }
 
         def withAcceptanceStage() {
-            stages << new Acceptance(script, 'Acceptance', jenkinsHelper, slack)
+            stages << new Acceptance(script, jenkinsHelper, slack)
                     .setKitchenLocalYml('.kitchen.docker.yml')
             return this
         }
 
         def withPublishStage() {
-            stages << new Publish(script, 'Publish', jenkinsHelper, slack)
+            stages << new Publish(script, jenkinsHelper, slack)
             return this
         }
 

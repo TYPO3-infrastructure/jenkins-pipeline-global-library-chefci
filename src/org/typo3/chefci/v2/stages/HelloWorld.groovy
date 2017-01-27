@@ -5,8 +5,8 @@ import org.typo3.chefci.helpers.Slack
 
 public class HelloWorld extends AbstractStage {
 
-    HelloWorld(Object script, String stageName, JenkinsHelper jenkinsHelper, Slack slack) {
-        super(script, stageName, jenkinsHelper, slack)
+    HelloWorld(Object script, JenkinsHelper jenkinsHelper, Slack slack) {
+        super(script, 'Hello World', jenkinsHelper, slack)
     }
 
     @Override
