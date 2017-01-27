@@ -55,7 +55,7 @@ class Publish extends AbstractStage {
         // timeouts out after specified time.
         def choice = new ChoiceParameterDefinition('versionBump', ['patch', 'minor', 'major'] as String[], 'Version Part:')
         def inputOptions = [message: 'Bump major, minor or patch version?', parameters: [choice]]
-        def timeoutOptions = [time: 15, unit: 'MINUTES']
+        def timeoutOptions = [time: 1, unit: 'DAYS']
 
         // call the input dialog
         Map inputValues = jenkinsHelper.inputWithTimeout([inputOptions: inputOptions, timeoutOptions: timeoutOptions])
