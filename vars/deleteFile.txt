@@ -1,0 +1,5 @@
+<strong>deleteFile('path/to/file.txt')</strong>
+
+<p>
+Deletes the specified file, if it exists. Does nothing, is file does not exist.
+</p>
