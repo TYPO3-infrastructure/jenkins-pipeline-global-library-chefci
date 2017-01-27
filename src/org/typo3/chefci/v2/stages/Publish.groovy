@@ -1,12 +1,13 @@
 package org.typo3.chefci.v2.stages
 
 import hudson.model.ChoiceParameterDefinition
+import org.typo3.chefci.helpers.JenkinsHelper
 import org.typo3.chefci.helpers.Slack
 
 class Publish extends AbstractStage {
 
-    Publish(Object script, String stageName) {
-        super(script, stageName)
+    Publish(Object script, String stageName, JenkinsHelper jenkinsHelper, Slack slack) {
+        super(script, stageName, jenkinsHelper, slack)
     }
 
     @Override
@@ -21,7 +22,7 @@ class Publish extends AbstractStage {
      */
     protected publish() {
 
-        (new Slack(script)).notifyVersionBump()
+        slack.notifyVersionBump()
 
         def userInput = getInput()
 
