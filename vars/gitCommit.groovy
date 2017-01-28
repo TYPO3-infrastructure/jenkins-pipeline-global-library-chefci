@@ -1,5 +1,5 @@
 #!/usr/bin/groovy
 
-String call() {
-    sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+String call(String sha = 'HEAD') {
+    sh(returnStdout: true, script: 'git rev-parse ' + sha).trim()
 }
