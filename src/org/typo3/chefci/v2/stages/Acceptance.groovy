@@ -1,5 +1,8 @@
 package org.typo3.chefci.v2.stages
 
+import org.typo3.chefci.helpers.JenkinsHelper
+import org.typo3.chefci.helpers.Slack
+
 class Acceptance extends AbstractStage {
     /**
      Name of the file that is placed inside the cookbook folder.
@@ -13,8 +16,8 @@ class Acceptance extends AbstractStage {
     def stashName = 'cookbook-tk'
 
 
-    Acceptance(Object script, String stageName) {
-        super(script, stageName)
+    Acceptance(Object script, JenkinsHelper jenkinsHelper, Slack slack) {
+        super(script, 'Acceptance', jenkinsHelper, slack)
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.typo3.chefci.v2
 
+import org.typo3.chefci.helpers.JenkinsHelper
+import org.typo3.chefci.helpers.Slack
 import org.typo3.chefci.v2.stages.*
 import org.jenkinsci.plugins.workflow.cps.DSL
 
@@ -10,6 +12,10 @@ class Pipeline implements Serializable {
     def stages = []
 
     DSL steps
+
+    Slack slack
+
+    JenkinsHelper jenkinsHelper
 
     static builder(script, DSL steps) {
         return new Builder(script, steps)
@@ -23,39 +29,45 @@ class Pipeline implements Serializable {
 
         DSL steps
 
+        Slack slack
+
+        JenkinsHelper jenkinsHelper
+
         Builder(def script, DSL steps) {
             this.script = script
             this.steps = steps
+            this.slack = new Slack(script)
+            this.jenkinsHelper = new JenkinsHelper(script)
         }
 
         def withHelloWorldStage() {
-            stages << new HelloWorld(script, 'Hello World')
+            stages << new HelloWorld(script, jenkinsHelper, slack )
             return this
         }
 
         def withGitCheckoutStage() {
-            stages << new GitCheckout(script, 'Git Checkout')
+            stages << new GitCheckout(script, jenkinsHelper, slack)
             return this
         }
 
         def withLintStage() {
-            stages << new Lint(script, 'Linting')
+            stages << new Lint(script, jenkinsHelper, slack)
             return this
         }
 
         def withBuildStage() {
-            stages << new Build(script, 'Build')
+            stages << new Build(script, jenkinsHelper, slack)
             return this
         }
 
         def withAcceptanceStage() {
-            stages << new Acceptance(script, 'Acceptance')
+            stages << new Acceptance(script, jenkinsHelper, slack)
                     .setKitchenLocalYml('.kitchen.docker.yml')
             return this
         }
 
         def withPublishStage() {
-            stages << new Publish(script, 'Publish')
+            stages << new Publish(script, jenkinsHelper, slack)
             return this
         }
 
@@ -82,13 +94,19 @@ class Pipeline implements Serializable {
         this.script = builder.script
         this.stages = builder.stages
         this.steps = builder.steps
+        this.slack = builder.slack
+        this.jenkinsHelper = builder.jenkinsHelper
     }
 
     void execute() {
+        slack.buildStart()
+
         // `stages.each { ... }` does not work, see https://issues.jenkins-ci.org/browse/JENKINS-26481
         for (Stage stage : stages) {
             stage.execute()
         }
+
+        slack.buildFinish()
     }
 
 }

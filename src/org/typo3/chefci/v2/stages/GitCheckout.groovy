@@ -1,9 +1,12 @@
 package org.typo3.chefci.v2.stages
 
+import org.typo3.chefci.helpers.JenkinsHelper
+import org.typo3.chefci.helpers.Slack
+
 class GitCheckout extends AbstractStage {
 
-    GitCheckout(Object script, String stageName) {
-        super(script, stageName)
+    GitCheckout(Object script, JenkinsHelper jenkinsHelper, Slack slack) {
+        super(script, 'Git Checkout', jenkinsHelper, slack)
     }
 
     @Override
