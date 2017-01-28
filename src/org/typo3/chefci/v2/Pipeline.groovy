@@ -103,7 +103,14 @@ class Pipeline implements Serializable {
 
         // `stages.each { ... }` does not work, see https://issues.jenkins-ci.org/browse/JENKINS-26481
         for (Stage stage : stages) {
-            stage.execute()
+
+            try {
+                stage.execute()
+            } catch (err) {
+                script.currentBuild.result = "FAILURE"
+                slack.buildFinish()
+                script.error "Build failed"
+            }
         }
 
         slack.buildFinish()
