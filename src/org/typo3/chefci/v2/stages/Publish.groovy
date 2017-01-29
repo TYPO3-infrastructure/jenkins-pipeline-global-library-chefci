@@ -5,6 +5,7 @@ import org.typo3.chefci.helpers.JenkinsHelper
 import org.typo3.chefci.helpers.Slack
 
 class Publish extends AbstractStage {
+    def versionIncrements = ['patch', 'minor', 'major']
 
     Publish(Object script, JenkinsHelper jenkinsHelper, Slack slack) {
         super(script, 'Publish', jenkinsHelper, slack)
@@ -18,36 +19,68 @@ class Publish extends AbstractStage {
     }
 
     /**
-     * Asks the user whether the cookbook should be uploaded
+     * Determines next version and uploads the cookbook
      */
     protected publish() {
 
-        slack.notifyVersionBump()
+        // one out of patch/minor/major
+        String increment
 
-        def userInput = getInput()
+        // try to parse the commit message for a hint
+        script.node {
+            increment = parseCommitMessageForVersionIncrementHint()
+        }
 
-        def newVersion
-        // if we don't get any user response, we do nothing
-        if (userInput.proceed) {
+        // ask the user. We cannot do this within a node{} block as it blocks an executor.
+        if (!increment) {
+            slack.notifyVersionBump()
+            def userInput = getInput()
+            increment = userInput.versionIncrement
+        }
+
+        // any of the two said patch/minor/major
+        if (increment) {
+            def newVersion
             script.node {
-                newVersion = bumpVersion(userInput.versionBump)
+                // increase the version by the specified increment
+                newVersion = bumpVersion(increment)
+                // upload the cookbook
                 upload()
             }
             // set the build name to something meaningful, i.e.
             // #1 - 1.2.3 (patch)
-            jenkinsHelper.annotateBuildName(" - ${newVersion} (${userInput.versionBump})")
+            jenkinsHelper.annotateBuildName(" - ${newVersion} (${increment})")
 
         } else {
-            script.echo "No cookbook upload was triggered within timeout"
+            script.echo "No cookbook upload"
             jenkinsHelper.annotateBuildName("(no upload)")
         }
+    }
+
+    /**
+     * Checks the last commit message subject for an occurrence of #patch, #minor or #major
+     * and returns the version increment found.
+     *
+     * @return Version increment found in the subject, null otherwise
+     */
+    protected String parseCommitMessageForVersionIncrementHint() {
+        String commitSubject = script.gitCommitSubject()
+        for (String increment : versionIncrements) {
+            // look for #patch, #minor, #major
+            if (commitSubject.contains('#' + increment)) {
+                script.echo "Found hint to increase version in the commit subject: ${increment}"
+                return increment
+            }
+        }
+        script.echo "Did not find a hint to increment version in the commit subject."
+        null
     }
 
     /**
      * Asks the user for his/her opinion, if we should bump the version number and then upload this.
      *
      *  this will return something like
-     *  [response: true, reason:user, submitter:johndoe, versionBump:patch]
+     *  [response: true, reason:user, submitter:johndoe, versionIncrement:patch]
      *  [response: false, reason:timeout]
      *
      * @return Map response options
@@ -56,7 +89,7 @@ class Publish extends AbstractStage {
         // generate the input dialog for version bump.
         // contains the choices patch/minor/major.
         // timeouts out after specified time.
-        def choice = new ChoiceParameterDefinition('versionBump', ['patch', 'minor', 'major'] as String[], 'Version Part:')
+        def choice = new ChoiceParameterDefinition('versionIncrement', versionIncrements as String[], 'Specify the level to increase the version.')
         def inputOptions = [message: 'Bump major, minor or patch version?', parameters: [choice]]
         def timeoutOptions = [time: 1, unit: 'DAYS']
 
