@@ -118,7 +118,7 @@ class Publish extends AbstractStage {
         def newVersion = script.readFile('VERSION')
 
         // TODO
-        def credentialsId = 'github-chefcitypo3org-token'
+        def credentialsId = 'github-token'
         script.withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
             // this was the coolest way to not store the password that I found
             // http://stackoverflow.com/questions/33570075/tag-a-repo-from-a-jenkins-workflow-script
