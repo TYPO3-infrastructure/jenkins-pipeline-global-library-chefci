@@ -35,7 +35,7 @@ class Slack implements Serializable {
 
     def notifyVersionBump() {
         send(
-                message: "${script.env.JOB_NAME} build #${script.env.BUILD_NUMBER} *waiting for input*:\n${script.env.BUILD_URL}",
+                message: "${script.env.JOB_NAME} build #${script.env.BUILD_NUMBER} *waiting for input*:\n${script.env.JOB_URL}",
                 color: 'warning',
         )
     }
