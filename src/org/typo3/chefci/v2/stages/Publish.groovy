@@ -64,6 +64,8 @@ class Publish extends AbstractStage {
      * @return Version increment found in the subject, null otherwise
      */
     protected String parseCommitMessageForVersionIncrementHint() {
+
+        // TODO this could instead use the global variable changeSets
         String commitSubject = script.gitCommitSubject()
         for (String increment : versionIncrements) {
             // look for #patch, #minor, #major
