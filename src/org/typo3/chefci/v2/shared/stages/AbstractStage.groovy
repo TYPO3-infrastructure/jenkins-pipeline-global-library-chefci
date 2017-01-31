@@ -1,4 +1,4 @@
-package org.typo3.chefci.v2.stages
+package org.typo3.chefci.v2.shared.stages
 
 import org.typo3.chefci.helpers.JenkinsHelper
 import org.typo3.chefci.helpers.Slack

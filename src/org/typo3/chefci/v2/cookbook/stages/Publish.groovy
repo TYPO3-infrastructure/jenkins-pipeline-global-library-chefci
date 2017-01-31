@@ -1,8 +1,9 @@
-package org.typo3.chefci.v2.stages
+package org.typo3.chefci.v2.cookbook.stages
 
 import hudson.model.ChoiceParameterDefinition
 import org.typo3.chefci.helpers.JenkinsHelper
 import org.typo3.chefci.helpers.Slack
+import org.typo3.chefci.v2.shared.stages.AbstractStage
 
 class Publish extends AbstractStage {
     def versionIncrements = ['patch', 'minor', 'major']

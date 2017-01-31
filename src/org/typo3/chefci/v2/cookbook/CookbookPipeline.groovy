@@ -1,11 +1,12 @@
-package org.typo3.chefci.v2
+package org.typo3.chefci.v2.cookbook
 
 import org.typo3.chefci.helpers.JenkinsHelper
 import org.typo3.chefci.helpers.Slack
-import org.typo3.chefci.v2.stages.*
+import org.typo3.chefci.v2.cookbook.stages.*
+import org.typo3.chefci.v2.shared.stages.Stage
 import org.jenkinsci.plugins.workflow.cps.DSL
 
-class Pipeline implements Serializable {
+class CookbookPipeline implements Serializable {
 
     def script
 
@@ -72,7 +73,7 @@ class Pipeline implements Serializable {
         }
 
         def build() {
-            return new Pipeline(this)
+            return new CookbookPipeline(this)
         }
 
         def buildDefaultPipeline() {
@@ -85,12 +86,12 @@ class Pipeline implements Serializable {
                 withPublishStage()
             }
 
-            return new Pipeline(this)
+            return new CookbookPipeline(this)
         }
 
     }
 
-    private Pipeline(Builder builder) {
+    private CookbookPipeline(Builder builder) {
         this.script = builder.script
         this.stages = builder.stages
         this.steps = builder.steps

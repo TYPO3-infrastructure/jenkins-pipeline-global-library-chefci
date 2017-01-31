@@ -1,7 +1,8 @@
-package org.typo3.chefci.v2.stages
+package org.typo3.chefci.v2.cookbook.stages
 
 import org.typo3.chefci.helpers.JenkinsHelper
 import org.typo3.chefci.helpers.Slack
+import org.typo3.chefci.v2.shared.stages.AbstractStage
 
 class Lint extends AbstractStage {
 
