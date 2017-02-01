@@ -13,26 +13,30 @@ class Lint extends AbstractStage {
     @Override
     void execute() {
         script.stage(stageName) {
-            foodcritic()
-            cookstyle()
+            script.node {
+                foodcritic()
+                cookstyle()
+                publishWarnings()
+            }
         }
     }
 
-    private foodcritic(){
-        script.node {
-            // we have to manually disable these directories because foodcritic is stupid by default.
-            // https://github.com/acrmp/foodcritic/issues/148
-            // Update: foodcritic v9 will solve this. thanks
-            script.sh('foodcritic . --exclude spec --exclude test')
-        }
+    private foodcritic() {
+        // we have to manually disable these directories because foodcritic is stupid by default.
+        // https://github.com/acrmp/foodcritic/issues/148
+        // Update: foodcritic v9 will solve this. thanks
+        script.sh('foodcritic . --exclude spec --exclude test')
     }
 
-    private cookstyle(){
-        script.node {
-            // see also http://atomic-penguin.github.io/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop/
-            script.sh('cookstyle --fail-level E')
-            script.step([$class: 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false, consoleParsers: [[parserName: 'Foodcritic'], [parserName: 'Rubocop']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', unHealthy: ''])
-            script.step([$class: 'AnalysisPublisher'])
-        }
+    private cookstyle() {
+        script.sh('cookstyle --fail-level E')
+    }
+
+    private publishWarnings() {
+        // see also http://atomic-penguin.github.io/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop/
+        script.step([$class         : 'WarningsPublisher', canComputeNew: false, canResolveRelativePaths: false,
+                     defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', unHealthy: '',
+                     consoleParsers : [[parserName: 'Foodcritic'], [parserName: 'Rubocop']]])
+        script.step([$class: 'AnalysisPublisher'])
     }
 }
