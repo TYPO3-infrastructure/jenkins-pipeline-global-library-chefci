@@ -22,6 +22,7 @@ class Lint extends AbstractStage {
         script.node {
             // we have to manually disable these directories because foodcritic is stupid by default.
             // https://github.com/acrmp/foodcritic/issues/148
+            // Update: foodcritic v9 will solve this. thanks
             script.sh('foodcritic . --exclude spec --exclude test')
         }
     }
