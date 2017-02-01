@@ -59,8 +59,8 @@
             <url>http://repo.jenkins-ci.org/public/</url>
         </repository>
         <repository>
-            <id>mvnrepositoriy.com</id>
-            <url>https://mvnrepositoriy.com/artifact</url>
+            <id>mvnrepository.com</id>
+            <url>https://mvnrepository.com/artifact</url>
         </repository>
     </repositories>
     <pluginRepositories>
