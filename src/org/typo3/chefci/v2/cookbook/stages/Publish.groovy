@@ -1,6 +1,7 @@
 package org.typo3.chefci.v2.cookbook.stages
 
 import hudson.model.ChoiceParameterDefinition
+import org.jenkinsci.plugins.credentialsbinding.impl.CredentialNotFoundException
 import org.typo3.chefci.helpers.JenkinsHelper
 import org.typo3.chefci.helpers.Slack
 import org.typo3.chefci.v2.shared.stages.AbstractStage
@@ -120,16 +121,20 @@ class Publish extends AbstractStage {
         script.sh "chef exec thor version:bump ${level}"
         def newVersion = script.readFile('VERSION')
 
-        // TODO
+        // we assume that such credential entry exist
         def credentialsId = 'github-token'
-        script.withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-            // this was the coolest way to not store the password that I found
-            // http://stackoverflow.com/questions/33570075/tag-a-repo-from-a-jenkins-workflow-script
-            // (there is a warning "warning: invalid credential line: get", but doesn't matter)
-            // yes, using HTTPS, because we have an API token already!
-            script.sh("git config credential.username ${script.env.GIT_USERNAME}")
-            script.sh("git config credential.helper '!echo password=\$GIT_PASSWORD; echo'")
-            script.sh("GIT_ASKPASS=true git push origin ${newVersion}")
+        try {
+            script.withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
+                // this was the coolest way to not store the password that I found
+                // http://stackoverflow.com/questions/33570075/tag-a-repo-from-a-jenkins-workflow-script
+                // (there is a warning "warning: invalid credential line: get", but doesn't matter)
+                // yes, using HTTPS, because we have an API token already!
+                script.sh("git config credential.username ${script.env.GIT_USERNAME}")
+                script.sh("git config credential.helper '!echo password=\$GIT_PASSWORD; echo'")
+                script.sh("GIT_ASKPASS=true git push origin ${newVersion}")
+            }
+        } catch (CredentialNotFoundException e) {
+            script.error "Credential entry not found: ${e.getMessage()}"
         }
 
         newVersion
