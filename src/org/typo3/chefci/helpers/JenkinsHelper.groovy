@@ -75,7 +75,7 @@ class JenkinsHelper implements Serializable {
 
                 // as we ask for the submitter, we get a Map back instead of a string
                 // besides the parameter supplied using args.inputOptions, this will include "submitter"
-                Map responseValues = script.input args.inputOptions
+                Map responseValues = script.input inputOptions
                 script.echo "Submitted by ${responseValues.submitter}"
 
                 return [proceed: true, reason: 'user'] + responseValues
