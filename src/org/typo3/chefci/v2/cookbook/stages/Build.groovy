@@ -17,7 +17,7 @@ class Build extends AbstractStage {
         }
     }
 
-    private def berkshelf(){
+    private berkshelf(){
         script.node {
             script.sh('berks install')
         }

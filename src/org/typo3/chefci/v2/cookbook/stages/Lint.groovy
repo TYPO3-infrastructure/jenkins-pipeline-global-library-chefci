@@ -18,7 +18,7 @@ class Lint extends AbstractStage {
         }
     }
 
-    private def foodcritic(){
+    private foodcritic(){
         script.node {
             // we have to manually disable these directories because foodcritic is stupid by default.
             // https://github.com/acrmp/foodcritic/issues/148
@@ -26,7 +26,7 @@ class Lint extends AbstractStage {
         }
     }
 
-    private def rubocop(){
+    private rubocop(){
         script.node {
             // see also http://atomic-penguin.github.io/blog/2014/04/29/stupid-jenkins-and-chef-tricks-part-1-rubocop/
             script.sh('rubocop --fail-level E')
