@@ -83,7 +83,7 @@ class JenkinsHelper implements Serializable {
                 if (responseValues instanceof String) {
                     script.echo "Response is a String. BlueOcean? Mimicking the correct behavior."
                     String choiceValue = responseValues
-                    String choiceKey = args.inputOptions.keySet().first()
+                    String choiceKey = args.inputOptions.parameters.first().getName()
                     responseValues = [(choiceKey): choiceValue, submitter: null]
                 }
                 script.echo "Submitted by ${responseValues.submitter}"
