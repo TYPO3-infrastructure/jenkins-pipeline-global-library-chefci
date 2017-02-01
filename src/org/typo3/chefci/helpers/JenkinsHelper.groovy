@@ -75,7 +75,17 @@ class JenkinsHelper implements Serializable {
 
                 // as we ask for the submitter, we get a Map back instead of a string
                 // besides the parameter supplied using args.inputOptions, this will include "submitter"
-                Map responseValues = script.input inputOptions
+                def responseValues = script.input inputOptions
+                script.echo "Response values: ${responseValues}"
+
+                // BlueOcean currently drops the submitterParameter
+                // https://issues.jenkins-ci.org/browse/JENKINS-41421
+                if (responseValues instanceof String) {
+                    script.echo "Response is a String. BlueOcean? Mimicking the correct behavior."
+                    String choiceValue = responseValues
+                    String choiceKey = args.inputOptions.keySet().first()
+                    responseValues = [(choiceKey): choiceValue, submitter: null]
+                }
                 script.echo "Submitted by ${responseValues.submitter}"
 
                 return [proceed: true, reason: 'user'] + responseValues
