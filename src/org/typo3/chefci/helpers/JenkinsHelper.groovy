@@ -100,7 +100,12 @@ class JenkinsHelper implements Serializable {
                 script.echo rejection.getShortDestepsion()
                 return [proceed: false, reason: 'user', submitter: rejection.getUser().toString()]
             }
+        } catch (err) {
+            // try to figure out, what's wrong when we manually abort the pipeline
+            return [proceed: false, reason: err.getMessage()]
         }
+
+        return [proceed: false, reason: 'wtf']
     }
 
     /**
