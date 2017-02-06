@@ -67,6 +67,8 @@ class JenkinsHelper implements Serializable {
      * @return Map containing above specified keys response/reason/submitter and those for parameters
      */
     Map inputWithTimeout(Map args) {
+        def returnData = [:]
+
         // see https://go.cloudbees.com/docs/support-kb-articles/CloudBees-Jenkins-Enterprise/Pipeline---How-to-add-an-input-step,-with-timeout,-that-continues-if-timeout-is-reached,-using-a-default-value.html
         try {
             script.timeout(args.timeoutOptions) {
@@ -88,24 +90,24 @@ class JenkinsHelper implements Serializable {
                 }
                 script.echo "Submitted by ${responseValues.submitter}"
 
-                return [proceed: true, reason: 'user'] + responseValues
+                returnData = [proceed: true, reason: 'user'] + responseValues
             }
         } catch (FlowInterruptedException err) { // error means we reached timeout
             // err.getCauses() returns [org.jenkinsci.plugins.workflow.support.script.input.Rejection]
             Rejection rejection = err.getCauses().first()
 
             if ('SYSTEM' == rejection.getUser().toString()) { // user == SYSTEM means timeout.
-                return [proceed: false, reason: 'timeout']
+                returnData = [proceed: false, reason: 'timeout']
             } else { // explicitly aborted
                 script.echo rejection.getShortDestepsion()
-                return [proceed: false, reason: 'user', submitter: rejection.getUser().toString()]
+                returnData = [proceed: false, reason: 'user', submitter: rejection.getUser().toString()]
             }
         } catch (err) {
             // try to figure out, what's wrong when we manually abort the pipeline
-            return [proceed: false, reason: err.getMessage()]
+            returnData = [proceed: false, reason: err.getMessage()]
         }
 
-        return [proceed: false, reason: 'wtf']
+        returnData
     }
 
     /**
