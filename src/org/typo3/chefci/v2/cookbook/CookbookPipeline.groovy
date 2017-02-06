@@ -110,7 +110,7 @@ class CookbookPipeline implements Serializable {
             } catch (err) {
                 script.currentBuild.result = "FAILURE"
                 slack.buildFinish()
-                script.error "Build failed"
+                script.error "Build failed: ${err.getMessage()}"
             }
         }
 
