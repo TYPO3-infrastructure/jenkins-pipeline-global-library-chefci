@@ -99,7 +99,7 @@ class JenkinsHelper implements Serializable {
             if ('SYSTEM' == rejection.getUser().toString()) { // user == SYSTEM means timeout.
                 returnData = [proceed: false, reason: 'timeout']
             } else { // explicitly aborted
-                script.echo rejection.getShortDestepsion()
+                script.echo rejection.getShortDescription()
                 returnData = [proceed: false, reason: 'user', submitter: rejection.getUser().toString()]
             }
         } catch (err) {
