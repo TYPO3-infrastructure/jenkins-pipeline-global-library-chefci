@@ -5,7 +5,7 @@ package org.typo3.chefci.v1;
 
 def execute(){
     slackSend(
-            message: "${env.JOB_NAME} build #${env.BUILD_NUMBER} *started*:\n${getCauses()}\n  ${env.BUILD_URL}",
+            message: "${env.JOB_NAME} build #${env.BUILD_NUMBER} *started*:\n${getCauses()}\n  ${env.BUILD_URL}\n*WARN: v1 pipeline in use!*",
             failOnError: false
     )
 }
