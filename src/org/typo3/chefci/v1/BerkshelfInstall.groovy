@@ -9,6 +9,11 @@ def berksInstall(){
     sh 'berks install'
 }
 
+def unsubscribeFromUpstreamJobs() {
+    // empty the job properties
+    properties([])
+}
+
 def subscribeToUpstreamJobs() {
 
     // list of dependent cookbooks and version constraints
@@ -134,6 +139,8 @@ def execute(){
     node {
         this.berksInstall()
         // this.subscribeToUpstreamJobs()
+        this.unsubscribeFromUpstreamJobs()
+
     }
 }
 
