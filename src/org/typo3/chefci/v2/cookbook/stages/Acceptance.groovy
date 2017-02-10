@@ -14,7 +14,7 @@ class Acceptance extends AbstractStage {
     /**
      * Name of the stashed cookbook contents. Does not really matter.
      */
-    def stashName = 'cookbook-tk'
+    def stashName = 'cookbook'
 
 
     Acceptance(Object script, JenkinsHelper jenkinsHelper, Slack slack) {

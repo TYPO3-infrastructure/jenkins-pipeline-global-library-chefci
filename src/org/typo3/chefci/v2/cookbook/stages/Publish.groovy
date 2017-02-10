@@ -44,6 +44,8 @@ class Publish extends AbstractStage {
         if (increment) {
             def newVersion
             script.node {
+                // make sure this node has the correct workspace content (not given automatically :-/)
+                script.unstash 'cookbook'
                 // increase the version by the specified increment
                 newVersion = bumpVersion(increment)
                 // upload the cookbook
