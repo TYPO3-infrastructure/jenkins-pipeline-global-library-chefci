@@ -34,8 +34,6 @@ class JenkinsHelper implements Serializable {
     String copyGlobalLibraryScript(String srcPath, String destPath = null) {
 
         destPath = destPath ?: createTempLocation(srcPath)
-        // writeFile does not overwrite, so we delete the file first
-        script.deleteFile destPath
         script.writeFile file: destPath, text: script.libraryResource(srcPath)
         script.echo "copyGlobalLibraryScript: copied ${srcPath} to ${destPath}"
         return destPath
