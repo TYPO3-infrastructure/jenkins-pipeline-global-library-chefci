@@ -36,6 +36,7 @@ class Publish extends AbstractStage {
         // ask the user. We cannot do this within a node{} block as it blocks an executor.
         if (!increment) {
             slack.notifyVersionBump()
+            // TODO currently, anonymous users can submit dialogs. This might be restricted using the `submitter` parameter of the `input` step.
             def userInput = getInput()
             increment = userInput.versionIncrement
         }
