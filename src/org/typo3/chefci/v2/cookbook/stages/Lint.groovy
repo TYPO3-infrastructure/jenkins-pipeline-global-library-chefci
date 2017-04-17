@@ -22,7 +22,7 @@ class Lint extends AbstractStage {
     }
 
     private foodcritic() {
-        def exitCode = script.sh('foodcritic .', returnStatus: true)
+        def exitCode = script.sh(script: 'foodcritic .', returnStatus: true)
         if (exitCode > 0) {
             script.echo "test-kitchen returned non-zero exit status. Ignoring."
         }
