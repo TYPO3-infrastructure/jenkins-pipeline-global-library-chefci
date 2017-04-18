@@ -22,10 +22,10 @@ class Lint extends AbstractStage {
     }
 
     private foodcritic() {
-        def exitCode = script.sh(script: 'foodcritic .', returnStatus: true)
-        if (exitCode > 0) {
-            script.echo "test-kitchen returned non-zero exit status. Ignoring."
-        }
+        // we have to manually disable these directories because foodcritic is stupid by default.
+        // https://github.com/acrmp/foodcritic/issues/148
+        // Update: foodcritic v9 will solve this. thanks
+        script.sh('foodcritic . --exclude spec --exclude test')
     }
 
     private cookstyle() {
