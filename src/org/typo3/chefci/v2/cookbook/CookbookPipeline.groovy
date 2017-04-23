@@ -63,7 +63,6 @@ class CookbookPipeline implements Serializable {
 
         def withAcceptanceStage() {
             stages << new Acceptance(script, jenkinsHelper, slack)
-                    .setKitchenLocalYml('.kitchen.docker.yml')
             return this
         }
 

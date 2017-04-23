@@ -6,10 +6,9 @@ import org.typo3.chefci.v2.shared.stages.AbstractStage
 
 class Acceptance extends AbstractStage {
     /**
-     Name of the file that is placed inside the cookbook folder.
-     Can be changed using setKitchenLocalYml('.kitchen.docker.yml')
+     * .kitchen.dokken.yml
      */
-    def kitchenLocalYmlName = '.kitchen.local.yml'
+    def kitchenDokkenYmlName = '.kitchen.dokken.yml'
 
     /**
      * Name of the stashed cookbook contents. Does not really matter.
@@ -30,7 +29,7 @@ class Acceptance extends AbstractStage {
 
     protected testKitchen() {
         script.node {
-            createKitchenYaml()
+            checkKitchenDokkenYaml()
             script.stash stashName
         }
 
@@ -38,18 +37,12 @@ class Acceptance extends AbstractStage {
     }
 
     /**
-     * Checks if a local kitchen config file (defaults to .kitchen.local.yml) already exists
-     * and places the one from this library otherwise (resources/cookbook/ folder).
+     * Verifies that the .kitchen.dokken.yml exists in the repo, fails otherwise.
      */
-    protected createKitchenYaml() {
+    protected checkKitchenDokkenYaml() {
 
-        if (!kitchenLocalYmlName) {
-            script.echo "No local kitchen config file specified. Doing nothing."
-        } else if (script.fileExists(kitchenLocalYmlName)) {
-            script.echo "Using the cookbook's ${kitchenLocalYmlName}"
-        } else {
-            script.echo "Placing default ${kitchenLocalYmlName} file in workspace"
-            jenkinsHelper.copyGlobalLibraryScript "cookbook/${kitchenLocalYmlName}", kitchenLocalYmlName
+        if (! script.fileExists(kitchenDokkenYmlName)) {
+            script.error "Did not find a ${kitchenDokkenYmlName} in the repository. Please add one."
         }
     }
 
@@ -82,7 +75,7 @@ class Acceptance extends AbstractStage {
         script.node {
             script.unstash stashName
 
-            script.withEnv(["KITCHEN_LOCAL_YAML=${kitchenLocalYmlName}"]) {
+            script.withEnv(["KITCHEN_LOCAL_YAML=${kitchenDokkenYmlName}"]) {
                 // read out the list of test instances from `kitchen list`
                 lines = script.sh(script: 'kitchen list', returnStdout: true).split('\n')
             }
@@ -109,7 +102,7 @@ class Acceptance extends AbstractStage {
                 script.unstash stashName
 
                 script.wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "XTerm"]) {
-                    script.withEnv(["KITCHEN_LOCAL_YAML=${kitchenLocalYmlName}"]) {
+                    script.withEnv(["KITCHEN_LOCAL_YAML=${kitchenDokkenYmlName}"]) {
                         try {
                             script.sh script: "kitchen test --destroy always ${instanceName}"
                         } catch (err) {
@@ -128,7 +121,7 @@ class Acceptance extends AbstractStage {
      * @param filename
      */
     void setKitchenLocalYml(String filename) {
-        kitchenLocalYmlName = filename
+        kitchenDokkenYmlName = filename
         this
     }
 
