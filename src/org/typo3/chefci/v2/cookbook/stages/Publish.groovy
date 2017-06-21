@@ -132,12 +132,11 @@ class Publish extends AbstractStage {
                 // http://stackoverflow.com/questions/33570075/tag-a-repo-from-a-jenkins-workflow-script
                 // (there is a warning "warning: invalid credential line: get", but doesn't matter)
                 // yes, using HTTPS, because we have an API token already!
-//                script.sh "git config credential.username ${script.env.GIT_USERNAME}"
-//                script.sh "git config credential.helper '!echo password=\$GIT_PASSWORD; echo'"
-//                script.retry(5) {
-//                    script.sh "GIT_ASKPASS=true git push origin ${newVersion} -v"
-//                }
-                script.sh "git push origin ${newVersion}"
+                script.sh "git config credential.username ${script.env.GIT_USERNAME}"
+                script.sh "git config credential.helper '!echo password=\$GIT_PASSWORD; echo'"
+                script.retry(5) {
+                    script.sh "GIT_ASKPASS=true git push origin ${newVersion} -v"
+                }
             }
         } catch (CredentialNotFoundException e) {
             script.error "Credential entry not found: ${e.getMessage()}"
