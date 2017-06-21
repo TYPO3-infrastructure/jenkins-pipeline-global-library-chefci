@@ -134,9 +134,7 @@ class Publish extends AbstractStage {
                 // yes, using HTTPS, because we have an API token already!
                 script.sh "git config credential.username ${script.env.GIT_USERNAME}"
                 script.sh "git config credential.helper '!echo password=\$GIT_PASSWORD; echo'"
-                script.retry(5) {
-                    script.sh "GIT_ASKPASS=true git push origin ${newVersion} -v"
-                }
+                script.sh "GIT_ASKPASS=true git push origin ${newVersion}"
             }
         } catch (CredentialNotFoundException e) {
             script.error "Credential entry not found: ${e.getMessage()}"
