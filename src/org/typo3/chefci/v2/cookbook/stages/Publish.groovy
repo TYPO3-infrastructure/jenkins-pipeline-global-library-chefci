@@ -128,9 +128,9 @@ class Publish extends AbstractStage {
         def credentialsId = 'github-token'
         try {
             script.withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-                gitCredentialsUrl = scm.getUserRemoteConfigs().first().getUrl().replace('://', '://' + env.GIT_USERNAME + ':' + env.GIT_PASSWORD + '@')
+                gitCredentialsUrl = script.scm.getUserRemoteConfigs().first().getUrl().replace('://', '://' + env.GIT_USERNAME + ':' + env.GIT_PASSWORD + '@')
                 command = "git push ${gitCredentialsUrl} ${newVersion}"
-                sh command
+                script.sh command
             }
         } catch (CredentialNotFoundException e) {
             script.error "Credential entry not found: ${e.getMessage()}"
