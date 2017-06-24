@@ -128,13 +128,9 @@ class Publish extends AbstractStage {
         def credentialsId = 'github-token'
         try {
             script.withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: credentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-                // this was the coolest way to not store the password that I found
-                // http://stackoverflow.com/questions/33570075/tag-a-repo-from-a-jenkins-workflow-script
-                // (there is a warning "warning: invalid credential line: get", but doesn't matter)
-                // yes, using HTTPS, because we have an API token already!
-                script.sh "git config credential.username ${script.env.GIT_USERNAME}"
-                script.sh "git config credential.helper '!echo password=\$GIT_PASSWORD; echo'"
-                script.sh "GIT_ASKPASS=true git push origin ${newVersion}"
+                gitCredentialsUrl = scm.getUserRemoteConfigs().first().getUrl().replace('://', '://' + env.GIT_USERNAME + ':' + env.GIT_PASSWORD + '@')
+                command = "git push ${gitCredentialsUrl} ${newVersion}"
+                sh command
             }
         } catch (CredentialNotFoundException e) {
             script.error "Credential entry not found: ${e.getMessage()}"
